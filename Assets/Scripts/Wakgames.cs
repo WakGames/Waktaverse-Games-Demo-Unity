@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -13,6 +14,8 @@ public class Wakgames : MonoBehaviour
         Fail,
         Success,
     }
+
+    public delegate void CallbackDelegate<T>(T result, int responseCode) where T : class;
 
     [SerializeField]
     private string ClientId;
@@ -32,7 +35,14 @@ public class Wakgames : MonoBehaviour
             }
             return m_tokenStorage;
         }
-        set => m_tokenStorage = value;
+        set
+        {
+            if (m_tokenStorage != null && m_tokenStorage != value)
+            {
+                value.UpdateToken(m_tokenStorage.AccessToken, m_tokenStorage.RefreshToken, m_tokenStorage.IdToken);
+            }
+            m_tokenStorage = value;
+        }
     }
 
     private void Start()
@@ -47,7 +57,9 @@ public class Wakgames : MonoBehaviour
         }
     }
 
-    public IEnumerator StartLogin(Action<UserProfileResult> callback)
+    #region Wakgames Login
+
+    public IEnumerator StartLogin(CallbackDelegate<UserProfileResult> callback)
     {
         string csrfState = WakgamesAuth.GenerateCsrfState();
         string codeVerifier = WakgamesAuth.GenerateCodeVerifier();
@@ -76,7 +88,7 @@ public class Wakgames : MonoBehaviour
             {
                 EndLogin();
 
-                StartCoroutine(GetUserProfile(callback));
+                yield return StartCoroutine(GetUserProfile(callback));
 
                 yield break;
             }
@@ -129,6 +141,16 @@ public class Wakgames : MonoBehaviour
         TokenStorage.ClearToken();
     }
 
+    #endregion
+
+    #region Wakgames API
+
+    [Serializable]
+    public class SuccessResult
+    {
+        public bool success;
+    }
+
     [Serializable]
     public class RefreshTokenResult
     {
@@ -137,11 +159,11 @@ public class Wakgames : MonoBehaviour
         public int idToken;
     }
 
-    public IEnumerator RefreshToken(Action<RefreshTokenResult> callback)
+    public IEnumerator RefreshToken(CallbackDelegate<RefreshTokenResult> callback)
     {
         if (string.IsNullOrEmpty(TokenStorage.RefreshToken))
         {
-            callback(null);
+            callback(null, 401);
             yield break;
         }
 
@@ -160,11 +182,11 @@ public class Wakgames : MonoBehaviour
 
             TokenStorage?.UpdateToken(result.accessToken, result.refreshToken, result.idToken);
 
-            callback(result);
+            callback(result, (int)webRequest.responseCode);
         }
         else
         {
-            callback(null);
+            callback(null, (int)webRequest.responseCode);
         }
     }
 
@@ -176,16 +198,62 @@ public class Wakgames : MonoBehaviour
         public string profileImg;
     }
 
-    public IEnumerator GetUserProfile(Action<UserProfileResult> callback, int maxRetry = 1)
+    public IEnumerator GetUserProfile(CallbackDelegate<UserProfileResult> callback)
+    {
+        yield return StartCoroutine(GetMethod("api/game-link/user/profile", callback));
+    }
+
+    [Serializable]
+    public class AchievementsResultItem
+    {
+        public string id;
+        public string name;
+        public string desc;
+        public string img;
+        public long regDate;
+    }
+
+    [Serializable]
+    public class AchievementsResult
+    {
+        public int size;
+        public List<AchievementsResultItem> achieves;
+    }
+
+    public IEnumerator GetUnlockedAchievements(CallbackDelegate<AchievementsResult> callback)
+    {
+        yield return StartCoroutine(GetMethod("api/game-link/achieve", callback));
+    }
+
+    public IEnumerator UnlockAchievement(string achieveId, CallbackDelegate<SuccessResult> callback)
+    {
+        achieveId = Uri.EscapeDataString(achieveId);
+        yield return StartCoroutine(PostMethod($"api/game-link/achieve?id={achieveId}", callback));
+    }
+
+    #endregion
+
+    #region HTTP API 기본 메서드
+
+    private IEnumerator GetMethod<T>(string api, CallbackDelegate<T> callback) where T : class
+    {
+        yield return ApiMethod(() => UnityWebRequest.Get($"{HOST}/{api}"), callback);
+    }
+
+    private IEnumerator PostMethod<T>(string api, CallbackDelegate<T> callback) where T : class
+    {
+        yield return ApiMethod(() => UnityWebRequest.PostWwwForm($"{HOST}/{api}", null), callback);
+    }
+
+    private IEnumerator ApiMethod<T>(Func<UnityWebRequest> webRequestFactory, CallbackDelegate<T> callback, int maxRetry = 1) where T : class
     {
         if (string.IsNullOrEmpty(TokenStorage.AccessToken))
         {
-            callback(null);
+            callback(null, 401);
             yield break;
         }
 
-        string url = $"{HOST}/api/game-link/user/profile";
-        using var webRequest = UnityWebRequest.Get(url);
+        using var webRequest = webRequestFactory();
         webRequest.SetRequestHeader("Authorization", "Bearer " + TokenStorage.AccessToken);
 
         yield return webRequest.SendWebRequest();
@@ -193,29 +261,31 @@ public class Wakgames : MonoBehaviour
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             string responseJson = webRequest.downloadHandler.text;
-            var result = JsonUtility.FromJson<UserProfileResult>(responseJson);
-            callback(result);
+            var result = JsonUtility.FromJson<T>(responseJson);
+            callback(result, (int)webRequest.responseCode);
         }
         else
         {
             if (webRequest.responseCode == 401 && maxRetry > 0)
             {
-                StartCoroutine(RefreshToken((token) =>
+                RefreshTokenResult token = null;
+                yield return StartCoroutine(RefreshToken((t, _) => token = t));
+
+                if (token != null)
                 {
-                    if (token != null)
-                    {
-                        StartCoroutine(GetUserProfile(callback, maxRetry - 1));
-                    }
-                    else
-                    {
-                        callback(null);
-                    }
-                }));
+                    yield return StartCoroutine(ApiMethod(webRequestFactory, callback, maxRetry - 1));
+                }
+                else
+                {
+                    callback(null, (int)webRequest.responseCode);
+                }
             }
             else
             {
-                callback(null);
+                callback(null, (int)webRequest.responseCode);
             }
         }
     }
+
+    #endregion
 }
