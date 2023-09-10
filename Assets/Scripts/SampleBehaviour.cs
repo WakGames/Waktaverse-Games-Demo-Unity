@@ -10,14 +10,46 @@ public class SampleBehaviour : MonoBehaviour
 {
     [SerializeField]
     private Wakgames m_wakgames;
+    [SerializeField]
+    private Text m_numText;
+
+    private int m_num;
 
     void Start()
     {
-        StartCoroutine(m_wakgames.UnlockAchievement("start_game", (success, resCode) =>
+        m_num = PlayerPrefs.GetInt("Counter", 0);
+        m_numText.text = m_num.ToString();
+
+        UnlockAchievement("start_game", "게임 시작");
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetInt("Counter", m_num);
+    }
+
+    public void OnBtnAddClicked()
+    {
+        m_num += 1;
+        m_numText.text = m_num.ToString();
+
+        if (m_num == 10)
+        {
+            UnlockAchievement("counter_10", "10번 클릭");
+        }
+        else if (m_num == 100)
+        {
+            UnlockAchievement("counter_100", "100번 클릭");
+        }
+    }
+
+    private void UnlockAchievement(string id, string name)
+    {
+        StartCoroutine(m_wakgames.UnlockAchievement(id, (success, resCode) =>
         {
             if (success != null)
             {
-                Debug.Log("게임 시작 도전과제 달성!");
+                Debug.Log($"{name} 도전과제 달성!");
             }
             else if (resCode == 404)
             {
@@ -25,7 +57,7 @@ public class SampleBehaviour : MonoBehaviour
             }
             else if (resCode == 409)
             {
-                Debug.Log("게임 시작 도전과제 이미 달성됨.");
+                Debug.Log($"{name} 도전과제 이미 달성됨.");
             }
             else
             {
