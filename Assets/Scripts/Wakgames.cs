@@ -8,13 +8,19 @@ using UnityEngine.Networking;
 
 public class Wakgames : MonoBehaviour
 {
-    public enum LoginState
+    private enum LoginState
     {
         Running,
         Fail,
         Success,
     }
 
+    /// <summary>
+    /// API 응답을 받을 콜백.
+    /// </summary>
+    /// <typeparam name="T">응답 형식.</typeparam>
+    /// <param name="result">응답 데이터. 없으면 null.</param>
+    /// <param name="responseCode">HTTP 응답 코드.</param>
     public delegate void CallbackDelegate<T>(T result, int responseCode) where T : class;
 
     [SerializeField]
@@ -22,9 +28,12 @@ public class Wakgames : MonoBehaviour
     [SerializeField]
     private int CallbackServerPort;
 
-    public const string HOST = "https://wakgames-test.neurowhai.cf";
+    public const string HOST = "https://waktaverse.games";
 
-    private IWakgamesTokenStorage m_tokenStorage;
+    /// <summary>
+    /// 토큰 저장소.
+    /// 별도로 설정하지 않으면 기본 저장소를 사용합니다.
+    /// </summary>
     public IWakgamesTokenStorage TokenStorage
     {
         get
@@ -44,6 +53,7 @@ public class Wakgames : MonoBehaviour
             m_tokenStorage = value;
         }
     }
+    private IWakgamesTokenStorage m_tokenStorage;
 
     private void Start()
     {
@@ -59,6 +69,11 @@ public class Wakgames : MonoBehaviour
 
     #region Wakgames Login
 
+    /// <summary>
+    /// 로그인 절차를 시작합니다.
+    /// </summary>
+    /// <param name="callback">로그인 완료 후 사용자 정보를 받을 콜백. 실패하면 null.</param>
+    /// <returns></returns>
     public IEnumerator StartLogin(CallbackDelegate<UserProfileResult> callback)
     {
         string csrfState = WakgamesAuth.GenerateCsrfState();
@@ -136,6 +151,9 @@ public class Wakgames : MonoBehaviour
         Destroy(callbackServer);
     }
 
+    /// <summary>
+    /// 저장된 토큰을 삭제하여 로그아웃합니다.
+    /// </summary>
     public void Logout()
     {
         TokenStorage.ClearToken();
@@ -145,20 +163,43 @@ public class Wakgames : MonoBehaviour
 
     #region Wakgames API
 
+    /// <summary>
+    /// 단순 성공 응답.
+    /// </summary>
     [Serializable]
     public class SuccessResult
     {
+        /// <summary>
+        /// 성공 여부.
+        /// </summary>
         public bool success;
     }
 
+    /// <summary>
+    /// 토큰 갱신 응답.
+    /// </summary>
     [Serializable]
     public class RefreshTokenResult
     {
+        /// <summary>
+        /// 접근 토큰.
+        /// </summary>
         public string accessToken;
+        /// <summary>
+        /// 갱신 토큰.
+        /// </summary>
         public string refreshToken;
+        /// <summary>
+        /// 사용자 ID.
+        /// </summary>
         public int idToken;
     }
 
+    /// <summary>
+    /// 토큰을 갱신하고 성공시 저장합니다.
+    /// </summary>
+    /// <param name="callback">새로 발급된 토큰 정보를 받을 콜백.</param>
+    /// <returns></returns>
     public IEnumerator RefreshToken(CallbackDelegate<RefreshTokenResult> callback)
     {
         if (string.IsNullOrEmpty(TokenStorage.RefreshToken))
@@ -190,41 +231,96 @@ public class Wakgames : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 사용자 프로필.
+    /// </summary>
     [Serializable]
     public class UserProfileResult
     {
+        /// <summary>
+        /// 사용자 ID.
+        /// </summary>
         public int id;
+        /// <summary>
+        /// 닉네임.
+        /// </summary>
         public string name;
+        /// <summary>
+        /// 프로필 이미지 URL.
+        /// </summary>
         public string profileImg;
     }
 
+    /// <summary>
+    /// 사용자 프로필을 조회합니다.
+    /// </summary>
+    /// <param name="callback">사용자 프로필 정보를 받을 콜백.</param>
+    /// <returns></returns>
     public IEnumerator GetUserProfile(CallbackDelegate<UserProfileResult> callback)
     {
         yield return StartCoroutine(GetMethod("api/game-link/user/profile", callback));
     }
 
+    /// <summary>
+    /// 한 도전과제 정보.
+    /// </summary>
     [Serializable]
     public class AchievementsResultItem
     {
+        /// <summary>
+        /// 도전과제 ID.
+        /// </summary>
         public string id;
+        /// <summary>
+        /// 도전과제 이름.
+        /// </summary>
         public string name;
+        /// <summary>
+        /// 도전과제 설명.
+        /// </summary>
         public string desc;
+        /// <summary>
+        /// 도전과제 아이콘 이미지 URL.
+        /// </summary>
         public string img;
+        /// <summary>
+        /// 도전과제 달성 시간. (UNIX 시간(ms))
+        /// </summary>
         public long regDate;
     }
 
+    /// <summary>
+    /// 도전과제 목록.
+    /// </summary>
     [Serializable]
     public class AchievementsResult
     {
+        /// <summary>
+        /// 개수.
+        /// </summary>
         public int size;
+        /// <summary>
+        /// 도전과제 목록.
+        /// </summary>
         public List<AchievementsResultItem> achieves;
     }
 
+    /// <summary>
+    /// 사용자가 달성한 도전과제 목록을 얻습니다.
+    /// </summary>
+    /// <param name="callback">달성 도전과제 목록을 받을 콜백.</param>
+    /// <returns></returns>
     public IEnumerator GetUnlockedAchievements(CallbackDelegate<AchievementsResult> callback)
     {
         yield return StartCoroutine(GetMethod("api/game-link/achieve", callback));
     }
 
+    /// <summary>
+    /// 특정 도전과제가 달성되었음을 기록합니다.
+    /// </summary>
+    /// <param name="achieveId">도전과제 ID.</param>
+    /// <param name="callback">달성 결과를 받을 콜백.</param>
+    /// <returns></returns>
     public IEnumerator UnlockAchievement(string achieveId, CallbackDelegate<SuccessResult> callback)
     {
         achieveId = Uri.EscapeDataString(achieveId);
