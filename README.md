@@ -26,7 +26,8 @@ Wakgames 클래스를 이용합니다.
 Serialize Field를 필수로 설정해야 합니다. (예제 장면 참고.)
 
 - ClientId : 개발자 포탈에서 확인된 Client ID.
-- CallbackServerPort : 개발자 포탈에서 설정한 Callback URI의 포트 번호.
+- CallbackServerPort : 개발자 포탈에서 설정한 Callback URI의 포트 번호.  
+  (개발자 포탈에서 무조건 `http://localhost:포트/callback` 형태로 설정해주세요.)
 
 선택적으로 TokenStorage를 기본 저장소 대신 별도 구현하여 설정할 수 있습니다.
 
