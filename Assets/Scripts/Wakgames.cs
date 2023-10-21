@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -331,6 +333,179 @@ public class Wakgames : MonoBehaviour
         yield return StartCoroutine(PostMethod($"api/game-link/achieve?id={achieveId}", callback));
     }
 
+    /// <summary>
+    /// 한 통계 정보.
+    /// </summary>
+    [Serializable]
+    public class GetStatsResultItem
+    {
+        /// <summary>
+        /// 통계 ID.
+        /// </summary>
+        public string id;
+        /// <summary>
+        /// 통계 이름.
+        /// </summary>
+        public string name;
+        /// <summary>
+        /// 현재 통계 값.
+        /// </summary>
+        public int val;
+        /// <summary>
+        /// 최대 통계 값.
+        /// </summary>
+        public int? max;
+        /// <summary>
+        /// 최초 누적일. (UNIX 시간(ms))
+        /// </summary>
+        public long regDate;
+        /// <summary>
+        /// 마지막 누적일. (UNIX 시간(ms))
+        /// </summary>
+        public long chgDate;
+    }
+
+    /// <summary>
+    /// 통계 목록.
+    /// </summary>
+    [Serializable]
+    public class GetStatsResult
+    {
+        /// <summary>
+        /// 개수.
+        /// </summary>
+        public int size;
+        /// <summary>
+        /// 통계 목록.
+        /// </summary>
+        public List<GetStatsResultItem> stats;
+    }
+
+    /// <summary>
+    /// 사용자의 누적 통계 값들을 얻습니다.
+    /// </summary>
+    /// <param name="callback">통계 목록을 받을 콜백.</param>
+    /// <returns></returns>
+    public IEnumerator GetStats(CallbackDelegate<GetStatsResult> callback)
+    {
+        yield return StartCoroutine(GetMethod("api/game-link/stat", callback));
+    }
+
+    /// <summary>
+    /// 한 통계 입력 정보.
+    /// </summary>
+    [Serializable]
+    public class SetStatsInputItem
+    {
+        /// <summary>
+        /// 통계 ID.
+        /// </summary>
+        public string id;
+        /// <summary>
+        /// 입력할 통계 값.
+        /// </summary>
+        public int val;
+    }
+
+    /// <summary>
+    /// 통계 입력 목록.
+    /// </summary>
+    [Serializable]
+    public class SetStatsInput : IEnumerable<SetStatsInputItem>
+    {
+        /// <summary>
+        /// 입력할 통계들.
+        /// </summary>
+        public List<SetStatsInputItem> stats;
+
+        public void Add(string id, int val)
+        {
+            stats ??= new List<SetStatsInputItem>();
+            stats.Add(new SetStatsInputItem { id = id, val = val });
+        }
+
+        public IEnumerator<SetStatsInputItem> GetEnumerator()
+        {
+            return stats.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return stats.GetEnumerator();
+        }
+    }
+
+    /// <summary>
+    /// 한 통계 입력 결과.
+    /// </summary>
+    [Serializable]
+    public class SetStatsResultStatItem
+    {
+        /// <summary>
+        /// 통계 ID.
+        /// </summary>
+        public string id;
+        /// <summary>
+        /// 입력된 통계 값.
+        /// </summary>
+        public int val;
+    }
+
+    /// <summary>
+    /// 한 도전과제 달성 결과.
+    /// </summary>
+    [Serializable]
+    public class SetStatsResultAchieveItem
+    {
+        /// <summary>
+        /// 도전과제 ID.
+        /// </summary>
+        public string id;
+        /// <summary>
+        /// 도전과제 이름.
+        /// </summary>
+        public string name;
+        /// <summary>
+        /// 도전과제 설명.
+        /// </summary>
+        public string desc;
+        /// <summary>
+        /// 도전과제 아이콘 이미지 URL.
+        /// </summary>
+        public string img;
+        /// <summary>
+        /// 도전과제 달성 시간. (UNIX 시간(ms))
+        /// </summary>
+        public long regDate;
+    }
+
+    /// <summary>
+    /// 통계 입력 결과 목록.
+    /// </summary>
+    [Serializable]
+    public class SetStatsResult
+    {
+        /// <summary>
+        /// 입력된 통계들.
+        /// </summary>
+        public List<SetStatsResultStatItem> stats;
+        /// <summary>
+        /// 새로 달성된 도전과제들.
+        /// </summary>
+        public List<SetStatsResultAchieveItem> achieves;
+    }
+
+    /// <summary>
+    /// 사용자의 대상 통계 값을 입력합니다.
+    /// </summary>
+    /// <param name="stats">입력할 통계들.</param>
+    /// <param name="callback">통계 입력 결과를 받을 콜백.</param>
+    /// <returns></returns>
+    public IEnumerator SetStats(SetStatsInput stats, CallbackDelegate<SetStatsResult> callback)
+    {
+        yield return StartCoroutine(PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback));
+    }
+
     #endregion
 
     #region HTTP API 기본 메서드
@@ -345,6 +520,11 @@ public class Wakgames : MonoBehaviour
         yield return ApiMethod(() => UnityWebRequest.PostWwwForm($"{HOST}/{api}", null), callback);
     }
 
+    private IEnumerator PutMethod<T>(string api, string body, CallbackDelegate<T> callback) where T : class
+    {
+        yield return ApiMethod(() => UnityWebRequest.Put($"{HOST}/{api}", Encoding.UTF8.GetBytes(body)), callback);
+    }
+
     private IEnumerator ApiMethod<T>(Func<UnityWebRequest> webRequestFactory, CallbackDelegate<T> callback, int maxRetry = 1) where T : class
     {
         if (string.IsNullOrEmpty(TokenStorage.AccessToken))
@@ -355,6 +535,7 @@ public class Wakgames : MonoBehaviour
 
         using var webRequest = webRequestFactory();
         webRequest.SetRequestHeader("Authorization", "Bearer " + TokenStorage.AccessToken);
+        webRequest.SetRequestHeader("Content-Type", "application/json");
 
         yield return webRequest.SendWebRequest();
 
