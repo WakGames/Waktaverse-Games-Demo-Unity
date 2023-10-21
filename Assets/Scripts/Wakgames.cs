@@ -496,7 +496,7 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// 사용자의 대상 통계 값을 입력합니다.
+    /// 사용자의 대상 통계 값들을 입력합니다.
     /// </summary>
     /// <param name="stats">입력할 통계들.</param>
     /// <param name="callback">통계 입력 결과를 받을 콜백.</param>
