@@ -287,10 +287,6 @@ public class Wakgames : MonoBehaviour
         public string desc;
         /// <summary>
         /// 도전과제 아이콘 이미지 ID.
-        /// <code>
-        /// // 아래와 같이 전체 URL 생성.
-        /// $"{Wakgames.HOST}/img/{_.img}"
-        /// </code>
         /// </summary>
         public string img;
         /// <summary>
@@ -305,6 +301,19 @@ public class Wakgames : MonoBehaviour
         ///  연동된 통계 목푯값. (없으면 0.)
         /// </summary>
         public int targetStatVal;
+
+        /// <summary>
+        /// 도전과제 아이콘 이미지 ID.
+        /// </summary>
+        public string ImageUrl => $"{HOST}/img/{img}";
+        /// <summary>
+        /// 도전과제 달성 시간.
+        /// </summary>
+        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
+        /// <summary>
+        /// 연동된 통계 유무.
+        /// </summary>
+        public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
     }
 
     /// <summary>
@@ -375,6 +384,19 @@ public class Wakgames : MonoBehaviour
         /// 마지막 누적일. (UNIX 시간(ms))
         /// </summary>
         public long chgDate;
+
+        /// <summary>
+        /// 통계 최댓값 유무.
+        /// </summary>
+        public bool HasMax => max != 0;
+        /// <summary>
+        /// 최초 누적일.
+        /// </summary>
+        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
+        /// <summary>
+        /// 마지막 누적일.
+        /// </summary>
+        public DateTimeOffset ChgDate => DateTimeOffset.FromUnixTimeMilliseconds(chgDate);
     }
 
     /// <summary>
@@ -483,10 +505,6 @@ public class Wakgames : MonoBehaviour
         public string desc;
         /// <summary>
         /// 도전과제 아이콘 이미지 ID.
-        /// <code>
-        /// // 아래와 같이 전체 URL 생성.
-        /// $"{Wakgames.HOST}/img/{_.img}"
-        /// </code>
         /// </summary>
         public string img;
         /// <summary>
@@ -501,6 +519,19 @@ public class Wakgames : MonoBehaviour
         ///  연동된 통계 목푯값. (없으면 0.)
         /// </summary>
         public int targetStatVal;
+
+        /// <summary>
+        /// 도전과제 아이콘 이미지 ID.
+        /// </summary>
+        public string ImageUrl => $"{HOST}/img/{img}";
+        /// <summary>
+        /// 도전과제 달성 시간.
+        /// </summary>
+        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
+        /// <summary>
+        /// 연동된 통계 유무.
+        /// </summary>
+        public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
     }
 
     /// <summary>
