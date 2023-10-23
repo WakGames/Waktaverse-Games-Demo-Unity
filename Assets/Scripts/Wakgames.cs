@@ -360,9 +360,9 @@ public class Wakgames : MonoBehaviour
         /// </summary>
         public int val;
         /// <summary>
-        /// 최대 통계 값.
+        /// 최대 통계 값. (없으면 0.)
         /// </summary>
-        public int? max;
+        public int max;
         /// <summary>
         /// 최초 누적일. (UNIX 시간(ms))
         /// </summary>
