@@ -286,7 +286,11 @@ public class Wakgames : MonoBehaviour
         /// </summary>
         public string desc;
         /// <summary>
-        /// 도전과제 아이콘 이미지 URL.
+        /// 도전과제 아이콘 이미지 ID.
+        /// <code>
+        /// // 아래와 같이 전체 URL 생성.
+        /// $"{Wakgames.HOST}/img/{_.img}"
+        /// </code>
         /// </summary>
         public string img;
         /// <summary>
@@ -478,7 +482,11 @@ public class Wakgames : MonoBehaviour
         /// </summary>
         public string desc;
         /// <summary>
-        /// 도전과제 아이콘 이미지 URL.
+        /// 도전과제 아이콘 이미지 ID.
+        /// <code>
+        /// // 아래와 같이 전체 URL 생성.
+        /// $"{Wakgames.HOST}/img/{_.img}"
+        /// </code>
         /// </summary>
         public string img;
         /// <summary>
