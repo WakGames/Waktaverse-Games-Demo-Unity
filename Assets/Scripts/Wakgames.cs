@@ -293,6 +293,14 @@ public class Wakgames : MonoBehaviour
         /// 도전과제 달성 시간. (UNIX 시간(ms))
         /// </summary>
         public long regDate;
+        /// <summary>
+        /// 연동된 통계 ID. (없으면 공백.)
+        /// </summary>
+        public string statId;
+        /// <summary>
+        ///  연동된 통계 목푯값. (없으면 0.)
+        /// </summary>
+        public int targetStatVal;
     }
 
     /// <summary>
@@ -477,6 +485,14 @@ public class Wakgames : MonoBehaviour
         /// 도전과제 달성 시간. (UNIX 시간(ms))
         /// </summary>
         public long regDate;
+        /// <summary>
+        /// 연동된 통계 ID. (없으면 공백.)
+        /// </summary>
+        public string statId;
+        /// <summary>
+        ///  연동된 통계 목푯값. (없으면 0.)
+        /// </summary>
+        public int targetStatVal;
     }
 
     /// <summary>
