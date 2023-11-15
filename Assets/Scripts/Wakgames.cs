@@ -30,11 +30,7 @@ public class Wakgames : MonoBehaviour
     [SerializeField]
     private int CallbackServerPort;
 
-#if WAKGAMES_DEMO
-    public const string HOST = "https://wakgames-test.neurowhai.cf";
-#else
     public const string HOST = "https://waktaverse.games";
-#endif
 
     /// <summary>
     /// 토큰 저장소.
