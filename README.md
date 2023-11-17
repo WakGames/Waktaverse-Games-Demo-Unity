@@ -11,11 +11,11 @@
 
 ### Scripts
 
-- Wakgames.cs : SDK 진입점.
-- WakgamesAuth.cs : OAuth 유틸리티.
-- WakgamesCallbackServer.cs : OAuth 콜백 서버.
-- WakgamesDefaultTokenStorage.cs : 기본 토큰 저장소.
-- IWakgamesTokenStorage.cs : 토큰 저장소 인터페이스.
+- [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/Wakgames.cs>) : SDK 진입점.
+- [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
+- [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
+- [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesDefaultTokenStorage.cs>) : 기본 토큰 저장소.
+- [IWakgamesTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/IWakgamesTokenStorage.cs>) : 토큰 저장소 인터페이스.
 
 ## SDK 사용법
 
