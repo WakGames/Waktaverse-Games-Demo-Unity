@@ -46,6 +46,7 @@ API 호출이 실패한 경우 결과 데이터가 null이 되며 오류 코드�
 - UnlockAchievement : 특정 도전과제 달성을 기록합니다.
 - GetStats : 사용자의 통계 값들을 얻습니다.
 - SetStats : 사용자의 대상 통계 값들을 입력합니다.
+- GetStatBoard : 대상 통계의 전체 사용자 값을 내림차순으로 얻습니다.
 
 ## [Package Releases](https://github.com/WakGames/Waktaverse-Games-Demo-Unity/releases)
 
