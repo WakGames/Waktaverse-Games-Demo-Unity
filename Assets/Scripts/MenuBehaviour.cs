@@ -31,6 +31,19 @@ public class MenuBehaviour : MonoBehaviour
                 m_descText.text = "로그아웃 상태입니다.";
             }
         }));
+
+        StartCoroutine(m_wakgames.GetStatBoard("click_cnt", (result, resCode) =>
+        {
+            if (result != null)
+            {
+                int rank = result.BoardIndex + 1;
+                Debug.Log($"현재 등수 : {rank}");
+            }
+            else
+            {
+                Debug.LogError($"알 수 없는 오류. (Code : {resCode})");
+            }
+        }));
     }
 
     void AppendAchievementMessage()
