@@ -18,11 +18,11 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// API ÀÀ´äÀ» ¹ŞÀ» Äİ¹é.
+    /// API ì‘ë‹µì„ ë°›ì„ ì½œë°±.
     /// </summary>
-    /// <typeparam name="T">ÀÀ´ä Çü½Ä.</typeparam>
-    /// <param name="result">ÀÀ´ä µ¥ÀÌÅÍ. ¾øÀ¸¸é null.</param>
-    /// <param name="responseCode">HTTP ÀÀ´ä ÄÚµå.</param>
+    /// <typeparam name="T">ì‘ë‹µ í˜•ì‹.</typeparam>
+    /// <param name="result">ì‘ë‹µ ë°ì´í„°. ì—†ìœ¼ë©´ null.</param>
+    /// <param name="responseCode">HTTP ì‘ë‹µ ì½”ë“œ.</param>
     public delegate void CallbackDelegate<T>(T result, int responseCode) where T : class;
 
     [SerializeField]
@@ -33,8 +33,8 @@ public class Wakgames : MonoBehaviour
     public const string HOST = "https://waktaverse.games";
 
     /// <summary>
-    /// ÅäÅ« ÀúÀå¼Ò.
-    /// º°µµ·Î ¼³Á¤ÇÏÁö ¾ÊÀ¸¸é ±âº» ÀúÀå¼Ò¸¦ »ç¿ëÇÕ´Ï´Ù.
+    /// í† í° ì €ì¥ì†Œ.
+    /// ë³„ë„ë¡œ ì„¤ì •í•˜ì§€ ì•Šìœ¼ë©´ ê¸°ë³¸ ì €ì¥ì†Œë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤.
     /// </summary>
     public IWakgamesTokenStorage TokenStorage
     {
@@ -61,20 +61,20 @@ public class Wakgames : MonoBehaviour
     {
         if (string.IsNullOrWhiteSpace(ClientId))
         {
-            throw new Exception($"À¯È¿ÇÑ Client ID¸¦ ¼³Á¤ÇØ¾ß ÇÕ´Ï´Ù.");
+            throw new Exception($"ìœ íš¨í•œ Client IDë¥¼ ì„¤ì •í•´ì•¼ í•©ë‹ˆë‹¤.");
         }
         if (CallbackServerPort <= 0)
         {
-            throw new Exception($"À¯È¿ÇÑ Äİ¹é ¼­¹ö Æ÷Æ®¸¦ ¼³Á¤ÇØ¾ß ÇÕ´Ï´Ù.");
+            throw new Exception($"ìœ íš¨í•œ ì½œë°± ì„œë²„ í¬íŠ¸ë¥¼ ì„¤ì •í•´ì•¼ í•©ë‹ˆë‹¤.");
         }
     }
 
     #region Wakgames Login
 
     /// <summary>
-    /// ·Î±×ÀÎ ÀıÂ÷¸¦ ½ÃÀÛÇÕ´Ï´Ù.
+    /// ë¡œê·¸ì¸ ì ˆì°¨ë¥¼ ì‹œì‘í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="callback">·Î±×ÀÎ ¿Ï·á ÈÄ »ç¿ëÀÚ Á¤º¸¸¦ ¹ŞÀ» Äİ¹é. ½ÇÆĞÇÏ¸é null.</param>
+    /// <param name="callback">ë¡œê·¸ì¸ ì™„ë£Œ í›„ ì‚¬ìš©ì ì •ë³´ë¥¼ ë°›ì„ ì½œë°±. ì‹¤íŒ¨í•˜ë©´ null.</param>
     /// <returns></returns>
     public IEnumerator StartLogin(CallbackDelegate<UserProfileResult> callback)
     {
@@ -154,7 +154,7 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÀúÀåµÈ ÅäÅ«À» »èÁ¦ÇÏ¿© ·Î±×¾Æ¿ôÇÕ´Ï´Ù.
+    /// ì €ì¥ëœ í† í°ì„ ì‚­ì œí•˜ì—¬ ë¡œê·¸ì•„ì›ƒí•©ë‹ˆë‹¤.
     /// </summary>
     public void Logout()
     {
@@ -166,41 +166,41 @@ public class Wakgames : MonoBehaviour
     #region Wakgames API
 
     /// <summary>
-    /// ´Ü¼ø ¼º°ø ÀÀ´ä.
+    /// ë‹¨ìˆœ ì„±ê³µ ì‘ë‹µ.
     /// </summary>
     [Serializable]
     public class SuccessResult
     {
         /// <summary>
-        /// ¼º°ø ¿©ºÎ.
+        /// ì„±ê³µ ì—¬ë¶€.
         /// </summary>
         public bool success;
     }
 
     /// <summary>
-    /// ÅäÅ« °»½Å ÀÀ´ä.
+    /// í† í° ê°±ì‹  ì‘ë‹µ.
     /// </summary>
     [Serializable]
     public class RefreshTokenResult
     {
         /// <summary>
-        /// Á¢±Ù ÅäÅ«.
+        /// ì ‘ê·¼ í† í°.
         /// </summary>
         public string accessToken;
         /// <summary>
-        /// °»½Å ÅäÅ«.
+        /// ê°±ì‹  í† í°.
         /// </summary>
         public string refreshToken;
         /// <summary>
-        /// »ç¿ëÀÚ ID.
+        /// ì‚¬ìš©ì ID.
         /// </summary>
         public int idToken;
     }
 
     /// <summary>
-    /// ÅäÅ«À» °»½ÅÇÏ°í ¼º°ø½Ã ÀúÀåÇÕ´Ï´Ù.
+    /// í† í°ì„ ê°±ì‹ í•˜ê³  ì„±ê³µì‹œ ì €ì¥í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="callback">»õ·Î ¹ß±ŞµÈ ÅäÅ« Á¤º¸¸¦ ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="callback">ìƒˆë¡œ ë°œê¸‰ëœ í† í° ì •ë³´ë¥¼ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator RefreshToken(CallbackDelegate<RefreshTokenResult> callback)
     {
@@ -234,29 +234,29 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// »ç¿ëÀÚ ÇÁ·ÎÇÊ.
+    /// ì‚¬ìš©ì í”„ë¡œí•„.
     /// </summary>
     [Serializable]
     public class UserProfileResult
     {
         /// <summary>
-        /// »ç¿ëÀÚ ID.
+        /// ì‚¬ìš©ì ID.
         /// </summary>
         public int id;
         /// <summary>
-        /// ´Ğ³×ÀÓ.
+        /// ë‹‰ë„¤ì„.
         /// </summary>
         public string name;
         /// <summary>
-        /// ÇÁ·ÎÇÊ ÀÌ¹ÌÁö URL.
+        /// í”„ë¡œí•„ ì´ë¯¸ì§€ URL.
         /// </summary>
         public string profileImg;
     }
 
     /// <summary>
-    /// »ç¿ëÀÚ ÇÁ·ÎÇÊÀ» Á¶È¸ÇÕ´Ï´Ù.
+    /// ì‚¬ìš©ì í”„ë¡œí•„ì„ ì¡°íšŒí•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="callback">»ç¿ëÀÚ ÇÁ·ÎÇÊ Á¤º¸¸¦ ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="callback">ì‚¬ìš©ì í”„ë¡œí•„ ì •ë³´ë¥¼ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator GetUserProfile(CallbackDelegate<UserProfileResult> callback)
     {
@@ -264,74 +264,74 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÑ µµÀü°úÁ¦ Á¤º¸.
+    /// í•œ ë„ì „ê³¼ì œ ì •ë³´.
     /// </summary>
     [Serializable]
     public class AchievementsResultItem
     {
         /// <summary>
-        /// µµÀü°úÁ¦ ID.
+        /// ë„ì „ê³¼ì œ ID.
         /// </summary>
         public string id;
         /// <summary>
-        /// µµÀü°úÁ¦ ÀÌ¸§.
+        /// ë„ì „ê³¼ì œ ì´ë¦„.
         /// </summary>
         public string name;
         /// <summary>
-        /// µµÀü°úÁ¦ ¼³¸í.
+        /// ë„ì „ê³¼ì œ ì„¤ëª….
         /// </summary>
         public string desc;
         /// <summary>
-        /// µµÀü°úÁ¦ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö ID.
+        /// ë„ì „ê³¼ì œ ì•„ì´ì½˜ ì´ë¯¸ì§€ ID.
         /// </summary>
         public string img;
         /// <summary>
-        /// µµÀü°úÁ¦ ´Ş¼º ½Ã°£. (UNIX ½Ã°£(ms))
+        /// ë„ì „ê³¼ì œ ë‹¬ì„± ì‹œê°„. (UNIX ì‹œê°„(ms))
         /// </summary>
         public long regDate;
         /// <summary>
-        /// ¿¬µ¿µÈ Åë°è ID. (¾øÀ¸¸é °ø¹é.)
+        /// ì—°ë™ëœ í†µê³„ ID. (ì—†ìœ¼ë©´ ê³µë°±.)
         /// </summary>
         public string statId;
         /// <summary>
-        ///  ¿¬µ¿µÈ Åë°è ¸ñÇ©°ª. (¾øÀ¸¸é 0.)
+        ///  ì—°ë™ëœ í†µê³„ ëª©í‘¯ê°’. (ì—†ìœ¼ë©´ 0.)
         /// </summary>
         public int targetStatVal;
 
         /// <summary>
-        /// µµÀü°úÁ¦ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö ID.
+        /// ë„ì „ê³¼ì œ ì•„ì´ì½˜ ì´ë¯¸ì§€ ID.
         /// </summary>
         public string ImageUrl => $"{HOST}/img/{img}";
         /// <summary>
-        /// µµÀü°úÁ¦ ´Ş¼º ½Ã°£.
+        /// ë„ì „ê³¼ì œ ë‹¬ì„± ì‹œê°„.
         /// </summary>
         public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
         /// <summary>
-        /// ¿¬µ¿µÈ Åë°è À¯¹«.
+        /// ì—°ë™ëœ í†µê³„ ìœ ë¬´.
         /// </summary>
         public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
     }
 
     /// <summary>
-    /// µµÀü°úÁ¦ ¸ñ·Ï.
+    /// ë„ì „ê³¼ì œ ëª©ë¡.
     /// </summary>
     [Serializable]
     public class AchievementsResult
     {
         /// <summary>
-        /// °³¼ö.
+        /// ê°œìˆ˜.
         /// </summary>
         public int size;
         /// <summary>
-        /// µµÀü°úÁ¦ ¸ñ·Ï.
+        /// ë„ì „ê³¼ì œ ëª©ë¡.
         /// </summary>
         public List<AchievementsResultItem> achieves;
     }
 
     /// <summary>
-    /// »ç¿ëÀÚ°¡ ´Ş¼ºÇÑ µµÀü°úÁ¦ ¸ñ·ÏÀ» ¾ò½À´Ï´Ù.
+    /// ì‚¬ìš©ìê°€ ë‹¬ì„±í•œ ë„ì „ê³¼ì œ ëª©ë¡ì„ ì–»ìŠµë‹ˆë‹¤.
     /// </summary>
-    /// <param name="callback">´Ş¼º µµÀü°úÁ¦ ¸ñ·ÏÀ» ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="callback">ë‹¬ì„± ë„ì „ê³¼ì œ ëª©ë¡ì„ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator GetUnlockedAchievements(CallbackDelegate<AchievementsResult> callback)
     {
@@ -339,10 +339,10 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// Æ¯Á¤ µµÀü°úÁ¦°¡ ´Ş¼ºµÇ¾úÀ½À» ±â·ÏÇÕ´Ï´Ù.
+    /// íŠ¹ì • ë„ì „ê³¼ì œê°€ ë‹¬ì„±ë˜ì—ˆìŒì„ ê¸°ë¡í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="achieveId">µµÀü°úÁ¦ ID.</param>
-    /// <param name="callback">´Ş¼º °á°ú¸¦ ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="achieveId">ë„ì „ê³¼ì œ ID.</param>
+    /// <param name="callback">ë‹¬ì„± ê²°ê³¼ë¥¼ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator UnlockAchievement(string achieveId, CallbackDelegate<SuccessResult> callback)
     {
@@ -351,70 +351,70 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÑ Åë°è Á¤º¸.
+    /// í•œ í†µê³„ ì •ë³´.
     /// </summary>
     [Serializable]
     public class GetStatsResultItem
     {
         /// <summary>
-        /// Åë°è ID.
+        /// í†µê³„ ID.
         /// </summary>
         public string id;
         /// <summary>
-        /// Åë°è ÀÌ¸§.
+        /// í†µê³„ ì´ë¦„.
         /// </summary>
         public string name;
         /// <summary>
-        /// ÇöÀç Åë°è °ª.
+        /// í˜„ì¬ í†µê³„ ê°’.
         /// </summary>
         public int val;
         /// <summary>
-        /// ÃÖ´ë Åë°è °ª. (¾øÀ¸¸é 0.)
+        /// ìµœëŒ€ í†µê³„ ê°’. (ì—†ìœ¼ë©´ 0.)
         /// </summary>
         public int max;
         /// <summary>
-        /// ÃÖÃÊ ´©ÀûÀÏ. (UNIX ½Ã°£(ms))
+        /// ìµœì´ˆ ëˆ„ì ì¼. (UNIX ì‹œê°„(ms))
         /// </summary>
         public long regDate;
         /// <summary>
-        /// ¸¶Áö¸· ´©ÀûÀÏ. (UNIX ½Ã°£(ms))
+        /// ë§ˆì§€ë§‰ ëˆ„ì ì¼. (UNIX ì‹œê°„(ms))
         /// </summary>
         public long chgDate;
 
         /// <summary>
-        /// Åë°è ÃÖ´ñ°ª À¯¹«.
+        /// í†µê³„ ìµœëŒ“ê°’ ìœ ë¬´.
         /// </summary>
         public bool HasMax => max != 0;
         /// <summary>
-        /// ÃÖÃÊ ´©ÀûÀÏ.
+        /// ìµœì´ˆ ëˆ„ì ì¼.
         /// </summary>
         public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
         /// <summary>
-        /// ¸¶Áö¸· ´©ÀûÀÏ.
+        /// ë§ˆì§€ë§‰ ëˆ„ì ì¼.
         /// </summary>
         public DateTimeOffset ChgDate => DateTimeOffset.FromUnixTimeMilliseconds(chgDate);
     }
 
     /// <summary>
-    /// Åë°è ¸ñ·Ï.
+    /// í†µê³„ ëª©ë¡.
     /// </summary>
     [Serializable]
     public class GetStatsResult
     {
         /// <summary>
-        /// °³¼ö.
+        /// ê°œìˆ˜.
         /// </summary>
         public int size;
         /// <summary>
-        /// Åë°è ¸ñ·Ï.
+        /// í†µê³„ ëª©ë¡.
         /// </summary>
         public List<GetStatsResultItem> stats;
     }
 
     /// <summary>
-    /// »ç¿ëÀÚÀÇ ´©Àû Åë°è °ªµéÀ» ¾ò½À´Ï´Ù.
+    /// ì‚¬ìš©ìì˜ ëˆ„ì  í†µê³„ ê°’ë“¤ì„ ì–»ìŠµë‹ˆë‹¤.
     /// </summary>
-    /// <param name="callback">Åë°è ¸ñ·ÏÀ» ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="callback">í†µê³„ ëª©ë¡ì„ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator GetStats(CallbackDelegate<GetStatsResult> callback)
     {
@@ -422,29 +422,29 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÑ Åë°è ÀÔ·Â Á¤º¸.
+    /// í•œ í†µê³„ ì…ë ¥ ì •ë³´.
     /// </summary>
     [Serializable]
     public class SetStatsInputItem
     {
         /// <summary>
-        /// Åë°è ID.
+        /// í†µê³„ ID.
         /// </summary>
         public string id;
         /// <summary>
-        /// ÀÔ·ÂÇÒ Åë°è °ª.
+        /// ì…ë ¥í•  í†µê³„ ê°’.
         /// </summary>
         public int val;
     }
 
     /// <summary>
-    /// Åë°è ÀÔ·Â ¸ñ·Ï.
+    /// í†µê³„ ì…ë ¥ ëª©ë¡.
     /// </summary>
     [Serializable]
     public class SetStatsInput : IEnumerable<SetStatsInputItem>
     {
         /// <summary>
-        /// ÀÔ·ÂÇÒ Åë°èµé.
+        /// ì…ë ¥í•  í†µê³„ë“¤.
         /// </summary>
         public List<SetStatsInputItem> stats;
 
@@ -466,91 +466,91 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÑ Åë°è ÀÔ·Â °á°ú.
+    /// í•œ í†µê³„ ì…ë ¥ ê²°ê³¼.
     /// </summary>
     [Serializable]
     public class SetStatsResultStatItem
     {
         /// <summary>
-        /// Åë°è ID.
+        /// í†µê³„ ID.
         /// </summary>
         public string id;
         /// <summary>
-        /// ÀÔ·ÂµÈ Åë°è °ª.
+        /// ì…ë ¥ëœ í†µê³„ ê°’.
         /// </summary>
         public int val;
     }
 
     /// <summary>
-    /// ÇÑ µµÀü°úÁ¦ ´Ş¼º °á°ú.
+    /// í•œ ë„ì „ê³¼ì œ ë‹¬ì„± ê²°ê³¼.
     /// </summary>
     [Serializable]
     public class SetStatsResultAchieveItem
     {
         /// <summary>
-        /// µµÀü°úÁ¦ ID.
+        /// ë„ì „ê³¼ì œ ID.
         /// </summary>
         public string id;
         /// <summary>
-        /// µµÀü°úÁ¦ ÀÌ¸§.
+        /// ë„ì „ê³¼ì œ ì´ë¦„.
         /// </summary>
         public string name;
         /// <summary>
-        /// µµÀü°úÁ¦ ¼³¸í.
+        /// ë„ì „ê³¼ì œ ì„¤ëª….
         /// </summary>
         public string desc;
         /// <summary>
-        /// µµÀü°úÁ¦ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö ID.
+        /// ë„ì „ê³¼ì œ ì•„ì´ì½˜ ì´ë¯¸ì§€ ID.
         /// </summary>
         public string img;
         /// <summary>
-        /// µµÀü°úÁ¦ ´Ş¼º ½Ã°£. (UNIX ½Ã°£(ms))
+        /// ë„ì „ê³¼ì œ ë‹¬ì„± ì‹œê°„. (UNIX ì‹œê°„(ms))
         /// </summary>
         public long regDate;
         /// <summary>
-        /// ¿¬µ¿µÈ Åë°è ID. (¾øÀ¸¸é °ø¹é.)
+        /// ì—°ë™ëœ í†µê³„ ID. (ì—†ìœ¼ë©´ ê³µë°±.)
         /// </summary>
         public string statId;
         /// <summary>
-        ///  ¿¬µ¿µÈ Åë°è ¸ñÇ©°ª. (¾øÀ¸¸é 0.)
+        ///  ì—°ë™ëœ í†µê³„ ëª©í‘¯ê°’. (ì—†ìœ¼ë©´ 0.)
         /// </summary>
         public int targetStatVal;
 
         /// <summary>
-        /// µµÀü°úÁ¦ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö ID.
+        /// ë„ì „ê³¼ì œ ì•„ì´ì½˜ ì´ë¯¸ì§€ ID.
         /// </summary>
         public string ImageUrl => $"{HOST}/img/{img}";
         /// <summary>
-        /// µµÀü°úÁ¦ ´Ş¼º ½Ã°£.
+        /// ë„ì „ê³¼ì œ ë‹¬ì„± ì‹œê°„.
         /// </summary>
         public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
         /// <summary>
-        /// ¿¬µ¿µÈ Åë°è À¯¹«.
+        /// ì—°ë™ëœ í†µê³„ ìœ ë¬´.
         /// </summary>
         public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
     }
 
     /// <summary>
-    /// Åë°è ÀÔ·Â °á°ú ¸ñ·Ï.
+    /// í†µê³„ ì…ë ¥ ê²°ê³¼ ëª©ë¡.
     /// </summary>
     [Serializable]
     public class SetStatsResult
     {
         /// <summary>
-        /// ÀÔ·ÂµÈ Åë°èµé.
+        /// ì…ë ¥ëœ í†µê³„ë“¤.
         /// </summary>
         public List<SetStatsResultStatItem> stats;
         /// <summary>
-        /// »õ·Î ´Ş¼ºµÈ µµÀü°úÁ¦µé.
+        /// ìƒˆë¡œ ë‹¬ì„±ëœ ë„ì „ê³¼ì œë“¤.
         /// </summary>
         public List<SetStatsResultAchieveItem> achieves;
     }
 
     /// <summary>
-    /// »ç¿ëÀÚÀÇ ´ë»ó Åë°è °ªµéÀ» ÀÔ·ÂÇÕ´Ï´Ù.
+    /// ì‚¬ìš©ìì˜ ëŒ€ìƒ í†µê³„ ê°’ë“¤ì„ ì…ë ¥í•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="stats">ÀÔ·ÂÇÒ Åë°èµé.</param>
-    /// <param name="callback">Åë°è ÀÔ·Â °á°ú¸¦ ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="stats">ì…ë ¥í•  í†µê³„ë“¤.</param>
+    /// <param name="callback">í†µê³„ ì…ë ¥ ê²°ê³¼ë¥¼ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator SetStats(SetStatsInput stats, CallbackDelegate<SetStatsResult> callback)
     {
@@ -558,96 +558,96 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// ÇÑ »ç¿ëÀÚ Åë°è Á¤º¸.
+    /// í•œ ì‚¬ìš©ì í†µê³„ ì •ë³´.
     /// </summary>
     [Serializable]
     public class GetStatBoardResultItem
     {
         /// <summary>
-        /// »ç¿ëÀÚ Á¤º¸.
+        /// ì‚¬ìš©ì ì •ë³´.
         /// </summary>
         public GetStatBoardResultUser user;
         /// <summary>
-        /// Åë°è °ª.
+        /// í†µê³„ ê°’.
         /// </summary>
         public int val;
     }
 
     /// <summary>
-    /// Åë°è Á¤º¸.
+    /// í†µê³„ ì •ë³´.
     /// </summary>
     [Serializable]
     public class GetStatBoardResultStat
     {
         /// <summary>
-        /// Åë°è ÀÌ¸§.
+        /// í†µê³„ ì´ë¦„.
         /// </summary>
         public string name;
         /// <summary>
-        /// ÃÖ´ë Åë°è °ª. (¾øÀ¸¸é 0.)
+        /// ìµœëŒ€ í†µê³„ ê°’. (ì—†ìœ¼ë©´ 0.)
         /// </summary>
         public int max;
 
         /// <summary>
-        /// Åë°è ÃÖ´ñ°ª À¯¹«.
+        /// í†µê³„ ìµœëŒ“ê°’ ìœ ë¬´.
         /// </summary>
         public bool HasMax => max != 0;
     }
 
     /// <summary>
-    /// »ç¿ëÀÚ Á¤º¸.
+    /// ì‚¬ìš©ì ì •ë³´.
     /// </summary>
     [Serializable]
     public class GetStatBoardResultUser
     {
         /// <summary>
-        /// »ç¿ëÀÚ ID.
+        /// ì‚¬ìš©ì ID.
         /// </summary>
         public int id;
         /// <summary>
-        /// ´Ğ³×ÀÓ.
+        /// ë‹‰ë„¤ì„.
         /// </summary>
         public string name;
         /// <summary>
-        /// ÇÁ·ÎÇÊ ÀÌ¹ÌÁö URL.
+        /// í”„ë¡œí•„ ì´ë¯¸ì§€ URL.
         /// </summary>
         public string img;
     }
 
     /// <summary>
-    /// ÀüÃ¼ »ç¿ëÀÚ Åë°è Á¶È¸ °á°ú.
+    /// ì „ì²´ ì‚¬ìš©ì í†µê³„ ì¡°íšŒ ê²°ê³¼.
     /// </summary>
     [Serializable]
     public class GetStatBoardResult
     {
         /// <summary>
-        /// ÀüÃ¼ »ç¿ëÀÚ Åë°èµé °³¼ö.
+        /// ì „ì²´ ì‚¬ìš©ì í†µê³„ë“¤ ê°œìˆ˜.
         /// </summary>
         public int size;
         /// <summary>
-        /// ÀüÃ¼ »ç¿ëÀÚ Åë°èµé.
+        /// ì „ì²´ ì‚¬ìš©ì í†µê³„ë“¤.
         /// </summary>
         public List<GetStatBoardResultItem> board;
         /// <summary>
-        /// ´ë»ó Åë°è.
+        /// ëŒ€ìƒ í†µê³„.
         /// </summary>
         public GetStatBoardResultStat stat;
         /// <summary>
-        /// ÇöÀç »ç¿ëÀÚ ID.
+        /// í˜„ì¬ ì‚¬ìš©ì ID.
         /// </summary>
         public int me;
 
         /// <summary>
-        /// ÀüÃ¼ »ç¿ëÀÚ Åë°è ¸ñ·Ï¿¡¼­ ÇöÀç »ç¿ëÀÚÀÇ ÀÎµ¦½º.
+        /// ì „ì²´ ì‚¬ìš©ì í†µê³„ ëª©ë¡ì—ì„œ í˜„ì¬ ì‚¬ìš©ìì˜ ì¸ë±ìŠ¤.
         /// </summary>
         public int BoardIndex => board.FindIndex((i) => i.user.id == me);
     }
 
     /// <summary>
-    /// ´ë»ó Åë°èÀÇ ÀüÃ¼ »ç¿ëÀÚ °ªÀ» Á¶È¸ÇÕ´Ï´Ù. (°ª ³»¸²Â÷¼ø Á¤·ÄµÊ.)
+    /// ëŒ€ìƒ í†µê³„ì˜ ì „ì²´ ì‚¬ìš©ì ê°’ì„ ì¡°íšŒí•©ë‹ˆë‹¤. (ê°’ ë‚´ë¦¼ì°¨ìˆœ ì •ë ¬ë¨.)
     /// </summary>
-    /// <param name="statId">´ë»ó Åë°è ID.</param>
-    /// <param name="callback">ÀüÃ¼ »ç¿ëÀÚ Åë°è¸¦ ¹ŞÀ» Äİ¹é.</param>
+    /// <param name="statId">ëŒ€ìƒ í†µê³„ ID.</param>
+    /// <param name="callback">ì „ì²´ ì‚¬ìš©ì í†µê³„ë¥¼ ë°›ì„ ì½œë°±.</param>
     /// <returns></returns>
     public IEnumerator GetStatBoard(string statId, CallbackDelegate<GetStatBoardResult> callback)
     {
@@ -656,7 +656,7 @@ public class Wakgames : MonoBehaviour
 
     #endregion
 
-    #region HTTP API ±âº» ¸Ş¼­µå
+    #region HTTP API ê¸°ë³¸ ë©”ì„œë“œ
 
     private IEnumerator GetMethod<T>(string api, CallbackDelegate<T> callback) where T : class
     {

@@ -1,27 +1,27 @@
 public interface IWakgamesTokenStorage
 {
     /// <summary>
-    /// Á¢±Ù ÅäÅ«.
+    /// ì ‘ê·¼ í† í°.
     /// </summary>
     public string AccessToken { get; }
     /// <summary>
-    /// °»½Å ÅäÅ«.
+    /// ê°±ì‹  í† í°.
     /// </summary>
     public string RefreshToken { get; }
     /// <summary>
-    /// »ç¿ëÀÚ ID.
+    /// ì‚¬ìš©ì ID.
     /// </summary>
     public int IdToken { get; }
 
     /// <summary>
-    /// ÅäÅ« ÀúÀå.
+    /// í† í° ì €ì¥.
     /// </summary>
-    /// <param name="accessToken">Á¢±Ù ÅäÅ«.</param>
-    /// <param name="refreshToken">°»½Å ÅäÅ«.</param>
-    /// <param name="idToken">»ç¿ëÀÚ ID.</param>
+    /// <param name="accessToken">ì ‘ê·¼ í† í°.</param>
+    /// <param name="refreshToken">ê°±ì‹  í† í°.</param>
+    /// <param name="idToken">ì‚¬ìš©ì ID.</param>
     public void UpdateToken(string accessToken, string refreshToken, int idToken);
     /// <summary>
-    /// ÅäÅ« »èÁ¦.
+    /// í† í° ì‚­ì œ.
     /// </summary>
     public void ClearToken();
 }

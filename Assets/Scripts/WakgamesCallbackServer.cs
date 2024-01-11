@@ -55,7 +55,7 @@ public class WakgamesCallbackServer : MonoBehaviour
                 var request = context.Request;
                 var response = context.Response;
 
-                // callback ÂÊ ¿äÃ»ÀÌ ¾Æ´Ï¸é 404 ÀÀ´ä ÁÖ°í ¹«½Ã.
+                // callback ìª½ ìš”ì²­ì´ ì•„ë‹ˆë©´ 404 ì‘ë‹µ ì£¼ê³  ë¬´ì‹œ.
                 if (request.Url.LocalPath != "/callback")
                 {
                     response.StatusCode = 404;

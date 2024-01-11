@@ -21,14 +21,14 @@ public class MenuBehaviour : MonoBehaviour
         {
             if (profile != null)
             {
-                m_descText.text = $"{profile.name} °èÁ¤À¸·Î ·Î±×ÀÎ µÇ¾ú½À´Ï´Ù.";
+                m_descText.text = $"{profile.name} ê³„ì •ìœ¼ë¡œ ë¡œê·¸ì¸ ë˜ì—ˆìŠµë‹ˆë‹¤.";
                 m_loginButton.GetComponentInChildren<Text>().text = "Logout";
 
                 AppendAchievementMessage();
             }
             else
             {
-                m_descText.text = "·Î±×¾Æ¿ô »óÅÂÀÔ´Ï´Ù.";
+                m_descText.text = "ë¡œê·¸ì•„ì›ƒ ìƒíƒœì…ë‹ˆë‹¤.";
             }
         }));
 
@@ -37,11 +37,11 @@ public class MenuBehaviour : MonoBehaviour
             if (result != null)
             {
                 int rank = result.BoardIndex + 1;
-                Debug.Log($"ÇöÀç µî¼ö : {rank}");
+                Debug.Log($"í˜„ì¬ ë“±ìˆ˜ : {rank}");
             }
             else
             {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ¿À·ù. (Code : {resCode})");
+                Debug.LogError($"ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜. (Code : {resCode})");
             }
         }));
     }
@@ -53,7 +53,7 @@ public class MenuBehaviour : MonoBehaviour
             if (achieves != null)
             {
                 string achieveNames = string.Join(", ", achieves.achieves.Select((a) => a.name));
-                m_descText.text += $"\n´Ş¼ºÇÑ µµÀü°úÁ¦ : {achieves.size}°³\n{achieveNames}";
+                m_descText.text += $"\në‹¬ì„±í•œ ë„ì „ê³¼ì œ : {achieves.size}ê°œ\n{achieveNames}";
             }
         }));
     }
@@ -69,22 +69,22 @@ public class MenuBehaviour : MonoBehaviour
         {
             m_wakgames.Logout();
 
-            m_descText.text = "·Î±×¾Æ¿ô »óÅÂÀÔ´Ï´Ù.";
+            m_descText.text = "ë¡œê·¸ì•„ì›ƒ ìƒíƒœì…ë‹ˆë‹¤.";
             m_loginButton.GetComponentInChildren<Text>().text = "Login";
         }
         else
         {
-            m_descText.text = "·Î±×ÀÎ ÁßÀÔ´Ï´Ù.";
+            m_descText.text = "ë¡œê·¸ì¸ ì¤‘ì…ë‹ˆë‹¤.";
 
             StartCoroutine(m_wakgames.StartLogin((profile, resCode) =>
             {
                 if (profile == null)
                 {
-                    m_descText.text = $"·Î±×ÀÎ¿¡ ½ÇÆĞÇÏ¿´½À´Ï´Ù. (Code : {resCode})";
+                    m_descText.text = $"ë¡œê·¸ì¸ì— ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤. (Code : {resCode})";
                 }
                 else
                 {
-                    m_descText.text = $"{profile.name} °èÁ¤À¸·Î ·Î±×ÀÎ µÇ¾ú½À´Ï´Ù.";
+                    m_descText.text = $"{profile.name} ê³„ì •ìœ¼ë¡œ ë¡œê·¸ì¸ ë˜ì—ˆìŠµë‹ˆë‹¤.";
                     m_loginButton.GetComponentInChildren<Text>().text = "Logout";
 
                     AppendAchievementMessage();
@@ -93,19 +93,19 @@ public class MenuBehaviour : MonoBehaviour
                     {
                         if (success != null)
                         {
-                            Debug.Log("Ã¹ ·Î±×ÀÎ µµÀü°úÁ¦ ´Ş¼º!");
+                            Debug.Log("ì²« ë¡œê·¸ì¸ ë„ì „ê³¼ì œ ë‹¬ì„±!");
                         }
                         else if (resCode == 404)
                         {
-                            Debug.LogError("Á¸ÀçÇÏÁö ¾Ê´Â µµÀü°úÁ¦.");
+                            Debug.LogError("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ë„ì „ê³¼ì œ.");
                         }
                         else if (resCode == 409)
                         {
-                            Debug.Log("Ã¹ ·Î±×ÀÎ µµÀü°úÁ¦ ÀÌ¹Ì ´Ş¼ºµÊ.");
+                            Debug.Log("ì²« ë¡œê·¸ì¸ ë„ì „ê³¼ì œ ì´ë¯¸ ë‹¬ì„±ë¨.");
                         }
                         else
                         {
-                            Debug.LogError($"¾Ë ¼ö ¾ø´Â ¿À·ù. (Code : {resCode})");
+                            Debug.LogError($"ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜. (Code : {resCode})");
                         }
                     }));
                 }

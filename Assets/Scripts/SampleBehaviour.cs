@@ -20,7 +20,7 @@ public class SampleBehaviour : MonoBehaviour
         m_numText.text = "Loading";
         LoadClickCount();
 
-        UnlockAchievement("start_game", "°ÔÀÓ ½ÃÀÛ");
+        UnlockAchievement("start_game", "ê²Œì„ ì‹œì‘");
     }
 
     private void OnApplicationQuit()
@@ -45,19 +45,19 @@ public class SampleBehaviour : MonoBehaviour
         {
             if (success != null)
             {
-                Debug.Log($"{name} µµÀü°úÁ¦ ´Ş¼º!");
+                Debug.Log($"{name} ë„ì „ê³¼ì œ ë‹¬ì„±!");
             }
             else if (resCode == 404)
             {
-                Debug.LogError("Á¸ÀçÇÏÁö ¾Ê´Â µµÀü°úÁ¦.");
+                Debug.LogError("ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ë„ì „ê³¼ì œ.");
             }
             else if (resCode == 409)
             {
-                Debug.Log($"{name} µµÀü°úÁ¦ ÀÌ¹Ì ´Ş¼ºµÊ.");
+                Debug.Log($"{name} ë„ì „ê³¼ì œ ì´ë¯¸ ë‹¬ì„±ë¨.");
             }
             else
             {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ¿À·ù. (Code : {resCode})");
+                Debug.LogError($"ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜. (Code : {resCode})");
             }
         }));
     }
@@ -75,11 +75,11 @@ public class SampleBehaviour : MonoBehaviour
                 m_numText.text = num.ToString();
                 PlayerPrefs.SetInt("Counter", num);
 
-                Debug.Log($"Å¬¸¯ ¼ö : {num}");
+                Debug.Log($"í´ë¦­ ìˆ˜ : {num}");
             }
             else
             {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ¿À·ù. (Code : {resCode})");
+                Debug.LogError($"ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜. (Code : {resCode})");
 
                 m_num = PlayerPrefs.GetInt("Counter", 0);
                 m_numText.text = m_num.ToString();
@@ -99,21 +99,21 @@ public class SampleBehaviour : MonoBehaviour
                 var stat = result.stats.Find((s) => s.id == "click_cnt");
                 if (stat != null)
                 {
-                    Debug.Log($"Å¬¸¯ ¼ö ±â·ÏµÊ : {stat.val}");
+                    Debug.Log($"í´ë¦­ ìˆ˜ ê¸°ë¡ë¨ : {stat.val}");
                 }
                 else
                 {
-                    Debug.LogError($"Å¬¸¯ ¼ö ±â·Ï ½ÇÆĞ.");
+                    Debug.LogError($"í´ë¦­ ìˆ˜ ê¸°ë¡ ì‹¤íŒ¨.");
                 }
 
                 foreach (var achieve in result.achieves)
                 {
-                    Debug.Log($"{achieve.name} µµÀü°úÁ¦ ´Ş¼º!");
+                    Debug.Log($"{achieve.name} ë„ì „ê³¼ì œ ë‹¬ì„±!");
                 }
             }
             else
             {
-                Debug.LogError($"¾Ë ¼ö ¾ø´Â ¿À·ù. (Code : {resCode})");
+                Debug.LogError($"ì•Œ ìˆ˜ ì—†ëŠ” ì˜¤ë¥˜. (Code : {resCode})");
             }
         }));
     }
