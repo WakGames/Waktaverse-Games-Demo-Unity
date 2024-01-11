@@ -1,6 +1,5 @@
-# Waktaverse Games Demo (Unity)
-
-팬게임 연동을 위한 유니티 데모 프로젝트.
+# Waktaverse Games GameSDK (Unity)
+Unity 사용자의 Waktaverse Games의 팬게임 연동 기능을 위한 클라이언트 모듈 및 예제 소스입니다.
 
 ## Assets
 
