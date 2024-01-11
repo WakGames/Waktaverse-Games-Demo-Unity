@@ -1,5 +1,6 @@
-# Waktaverse Games GameSDK (Unity)
-Unity 사용자의 Waktaverse Games의 팬게임 연동 기능을 위한 클라이언트 모듈 및 예제 소스입니다.
+# Waktaverse Games SDK (Unity)
+
+Unity 게임을 Waktaverse Games와 연동하기 위한 클라이언트 모듈 및 사용 예제입니다.
 
 ## Assets
 
