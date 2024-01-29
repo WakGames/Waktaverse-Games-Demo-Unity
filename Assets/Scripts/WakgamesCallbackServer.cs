@@ -74,21 +74,29 @@ public class WakgamesCallbackServer : MonoBehaviour
                 queryParams.TryGetValue("error", out string error);
                 queryParams.TryGetValue("message", out string message);
 
-                if (string.IsNullOrEmpty(error) && state == CsrfState)
+                bool success = string.IsNullOrEmpty(error) && state == CsrfState;
+
+                if (success)
                 {
                     try
                     {
                         UserToken = GetToken(code);
+
+                        response.Redirect($"{Wakgames.HOST}/oauth/authorize?success=1");
+                        response.Close();
                     }
                     catch (Exception e)
                     {
                         Debug.LogException(e);
-                    }
 
-                    response.Redirect($"{Wakgames.HOST}/oauth/authorize?success=1");
-                    response.Close();
+                        error = e.Message;
+                        message = e.ToString();
+
+                        success = false;
+                    }
                 }
-                else
+
+                if (!success)
                 {
                     string responseText;
                     if (string.IsNullOrEmpty(error) && string.IsNullOrEmpty(message))
