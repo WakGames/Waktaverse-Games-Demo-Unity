@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -135,9 +134,18 @@ public class WakgamesCallbackServer : MonoBehaviour
         string callbackUri = Uri.EscapeDataString(m_listener.Prefixes.First() + "callback");
         string getTokenUri = $"{Wakgames.HOST}/api/oauth/token?grantType=authorization_code&clientId={ClientId}&code={code}&verifier={CodeVerifier}&callbackUri={callbackUri}";
 
-        using var httpClient = new HttpClient();
-        var resToken = httpClient.PostAsync(getTokenUri, new StringContent("")).ConfigureAwait(false).GetAwaiter().GetResult();
-        var responseContent = resToken.Content.ReadAsStringAsync().Result;
+        var request = (HttpWebRequest)WebRequest.Create(getTokenUri);
+        request.Method = "POST";
+        request.ContentLength = 0;
+
+        string responseContent;
+
+        using (var response = (HttpWebResponse)request.GetResponse())
+        using (var stream = response.GetResponseStream())
+        using (var reader = new StreamReader(stream))
+        {
+            responseContent = reader.ReadToEnd();
+        }
 
         return JsonUtility.FromJson<TokenResult>(responseContent);
     }
