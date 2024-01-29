@@ -212,6 +212,7 @@ public class Wakgames : MonoBehaviour
 
         string url = $"{HOST}/api/oauth/refresh";
         using var webRequest = UnityWebRequest.Get(url);
+        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{ClientId}");
         webRequest.SetRequestHeader("Authorization", "Bearer " + TokenStorage.RefreshToken);
 
         yield return webRequest.SendWebRequest();
@@ -682,6 +683,7 @@ public class Wakgames : MonoBehaviour
         }
 
         using var webRequest = webRequestFactory();
+        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{ClientId}");
         webRequest.SetRequestHeader("Authorization", "Bearer " + TokenStorage.AccessToken);
         webRequest.SetRequestHeader("Content-Type", "application/json");
 
