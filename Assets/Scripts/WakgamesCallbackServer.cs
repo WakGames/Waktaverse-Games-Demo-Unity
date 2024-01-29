@@ -137,6 +137,7 @@ public class WakgamesCallbackServer : MonoBehaviour
         var request = (HttpWebRequest)WebRequest.Create(getTokenUri);
         request.Method = "POST";
         request.ContentLength = 0;
+        request.UserAgent = $"WakGames_Game/{ClientId}";
 
         string responseContent;
 
