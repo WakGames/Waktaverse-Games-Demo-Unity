@@ -5,26 +5,48 @@ using UnityEngine.UI;
 
 public class AchieveTest : MonoBehaviour
 {
-    public Animator anim;
-    // Start is called before the first frame update
-    void Start()
-    {
-        anim.SetBool("BtnPush", false);
-    }
+    [SerializeField] private GameObject Alarms;
+    [SerializeField] private GameObject AchievePanel;
+    private List<AchievePanel> achievePanels;
 
-    // Update is called once per frame
-    void Update()
+    public void OnTestClick()
     {
-        if (anim.GetCurrentAnimatorStateInfo(0).IsName("ResetBtnPush"))
+        // 전 알림창 전부 올리기
+        foreach(AchievePanel _panel in achievePanels)
+            _panel.SlideUp();
+        // 새로운 알림창 생성
+        GameObject achievePanel = GetActivePanel();
+        AchievePanel panel = achievePanel.GetComponent<AchievePanel>();
+        panel.Setup(new()
         {
-            Debug.Log(anim.GetBool("BtnPush"));
-            anim.SetBool("BtnPush", false);
-        }
+            name = "게임 시작",
+            desc = "게임을 시작합니다."
+        });
+        panel.Appear();
+        achievePanels.Add(panel);
+    }
+    public void RemovePanel(AchievePanel panel)
+    {
+        achievePanels.Remove(panel);
     }
 
-    public void OnBtnTestClicked()
-    {   
-        anim.SetBool("BtnPush", true);
-        Debug.Log("Test Button Clicked");
+    private void Awake()
+    {
+        achievePanels = new List<AchievePanel>(){};
+    }
+
+    private GameObject GetActivePanel()
+    { 
+        // 기존에 생성된 알림창 가져오기
+        for(int i = 0; i < Alarms.transform.childCount; i++)
+        {
+            GameObject child = Alarms.transform.GetChild(i).gameObject;
+            if(!child.activeSelf)
+            {
+                child.SetActive(true);
+                return child;
+            }
+        }
+        return Instantiate(AchievePanel, Alarms.transform, false);
     }
 }
