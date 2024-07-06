@@ -30,7 +30,9 @@ public class AchievePanel : MonoBehaviour
     }
     public void SlideUp()
     {
-        StopAllCoroutines();
+        // 사라지고 있다면 IEHide를 종료시키지 않는다.
+        if(canvasGroup.alpha == 1)
+            StopAllCoroutines();
         StartCoroutine(IESlideUp());
     }
 
@@ -59,7 +61,7 @@ public class AchievePanel : MonoBehaviour
     private IEnumerator IEShow()
     {
         rectTransform.anchoredPosition = new Vector2(0, -360);
-        const float DESTINATION = 2f;
+        const float DESTINATION = 1f;
         float time = 0f;
         while(time < DESTINATION)
         {
@@ -71,7 +73,7 @@ public class AchievePanel : MonoBehaviour
     }
     private IEnumerator IEHide()
     {
-        const float DESTINATION = 1f;
+        const float DESTINATION = 0.6f;
         float time = 0f;
         while(time < DESTINATION)
         {
@@ -85,7 +87,7 @@ public class AchievePanel : MonoBehaviour
     private IEnumerator IESlideUp()
     {
         float endY = rectTransform.anchoredPosition.y + 120f;
-        const float DESTINATION = 2f;
+        const float DESTINATION = 1f;
         float time = 0f;
         while(time < DESTINATION)
         {

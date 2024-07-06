@@ -347,8 +347,24 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator UnlockAchievement(string achieveId, CallbackDelegate<SuccessResult> callback)
     {
+        // 업적 달성 시, 알람 띄우기
+        void DisplayAchieveAlarm(SuccessResult success, int responseCode)
+        {
+            if(success != null)
+            {
+                StartCoroutine(GetUnlockedAchievements((result, resCode) => {
+                    AchievementsResultItem achieve = result.achieves.Find(item => item.id == achieveId);
+                    FindObjectOfType<AchieveTest>().NewAlarm(achieve);
+                }));
+            }
+            else
+            {
+                Debug.Log($"Error: {responseCode}");
+            }
+        }
         achieveId = Uri.EscapeDataString(achieveId);
-        yield return StartCoroutine(PostMethod($"api/game-link/achieve?id={achieveId}", callback));
+        callback += DisplayAchieveAlarm;
+        yield return StartCoroutine(PostMethod($"api/game-link/achieve?id={achieveId}", (callback)));
     }
 
     /// <summary>
@@ -655,6 +671,32 @@ public class Wakgames : MonoBehaviour
         yield return StartCoroutine(GetMethod($"api/game-link/stat-board?id={statId}", callback));
     }
 
+    #endregion
+
+    #region Wakgames Image
+    /// <summary>
+    /// 이미지를 불러옵니다.
+    /// </summary>
+    /// <param name="img">이미지 주소.</param>
+    /// <param name="callback">가져온 텍스쳐를 받을 콜백</param>
+    public IEnumerator LoadImage(string img, Action<Texture2D, int> callback)
+    {
+        if(!img.StartsWith($"{HOST}/img"))
+            img = $"{HOST}/img/{img}";
+        UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(img);
+        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{ClientId}");
+
+        yield return webRequest.SendWebRequest();
+        
+        if(webRequest.result == UnityWebRequest.Result.Success)
+        {
+            callback(DownloadHandlerTexture.GetContent(webRequest), (int)webRequest.responseCode);
+        }
+        else
+        {
+            callback(null, (int)webRequest.responseCode);
+        }
+    }
     #endregion
 
     #region HTTP API 기본 메서드

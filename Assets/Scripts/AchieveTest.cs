@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static Wakgames;
 
 public class AchieveTest : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class AchieveTest : MonoBehaviour
     [SerializeField] private GameObject AchievePanel;
     private List<AchievePanel> achievePanels;
 
-    public void OnTestClick()
+    public void NewAlarm(AchievementsResultItem achieve)
     {
         // 전 알림창 전부 올리기
         foreach(AchievePanel _panel in achievePanels)
@@ -17,13 +18,18 @@ public class AchieveTest : MonoBehaviour
         // 새로운 알림창 생성
         GameObject achievePanel = GetActivePanel();
         AchievePanel panel = achievePanel.GetComponent<AchievePanel>();
-        panel.Setup(new()
+        panel.Setup(achieve);
+        panel.Appear();
+        achievePanels.Add(panel);
+    }
+
+    public void OnTestClick()
+    {
+        NewAlarm(new()
         {
             name = "게임 시작",
             desc = "게임을 시작합니다."
         });
-        panel.Appear();
-        achievePanels.Add(panel);
     }
     public void RemovePanel(AchievePanel panel)
     {
