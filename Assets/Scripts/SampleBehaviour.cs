@@ -1,9 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Profiling;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SampleBehaviour : MonoBehaviour
@@ -37,6 +34,17 @@ public class SampleBehaviour : MonoBehaviour
         {
             SaveClickCount();
         }
+    }
+    public void OnBtnResetClicked()
+    {
+        m_num = 0;
+        m_numText.text = "0";
+        SaveClickCount();
+        UnlockAchievement("reset", "큰 결심");
+    }
+    public void OnHiddenClicked()
+    {
+        UnlockAchievement("follow_ine", "쉿.");
     }
 
     private void UnlockAchievement(string id, string name)

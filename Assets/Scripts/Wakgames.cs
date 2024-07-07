@@ -7,6 +7,7 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using static Wakgames;
 
 public class Wakgames : MonoBehaviour
 {
@@ -354,7 +355,7 @@ public class Wakgames : MonoBehaviour
             {
                 StartCoroutine(GetUnlockedAchievements((result, resCode) => {
                     AchievementsResultItem achieve = result.achieves.Find(item => item.id == achieveId);
-                    FindObjectOfType<AchieveTest>().NewAlarm(achieve);
+                    FindObjectOfType<WakgamesAchieve>().NewAlarm(achieve);
                 }));
             }
             else
@@ -571,6 +572,12 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator SetStats(SetStatsInput stats, CallbackDelegate<SetStatsResult> callback)
     {
+        // 업적 달성 시, 알람 띄우기
+        void DisplayAchieveAlarm(SetStatsResult result, int responseCode)
+        {
+            StartCoroutine(FindObjectOfType<WakgamesAchieve>().NewAlarms(result.achieves.ToArray()));
+        }
+        callback += DisplayAchieveAlarm;
         yield return StartCoroutine(PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback));
     }
 
@@ -679,8 +686,15 @@ public class Wakgames : MonoBehaviour
     /// </summary>
     /// <param name="img">이미지 주소.</param>
     /// <param name="callback">가져온 텍스쳐를 받을 콜백</param>
-    public IEnumerator LoadImage(string img, Action<Texture2D, int> callback)
+    /// <returns></returns>
+    public IEnumerator LoadImage(string img, CallbackDelegate<Texture2D> callback)
     {
+        // 이미지 주소가 없으면 종료
+        if(img == null)
+        {
+            callback(null, -1);
+            yield break;
+        }
         if(!img.StartsWith($"{HOST}/img"))
             img = $"{HOST}/img/{img}";
         UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(img);

@@ -1,32 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using static Wakgames;
 
 public class AchievePanel : MonoBehaviour
 {
     [Header("UI")]
+    [SerializeField] private RawImage Icon;
     [SerializeField] private TextMeshProUGUI Name;
     [SerializeField] private TextMeshProUGUI Description;
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
 
-    private AchieveTest achieveTest;
+    private WakgamesAchieve m_wakgamesAchieve;
 
     private float appearedAt;
 
-    public void Setup(AchievementsResultItem achievement)
+    private readonly Vector2 START = new Vector2(0, -360f);
+    private readonly float HEIGHT = 120f;
+
+    public void Setup(AchievementsResultItem achievement, Texture2D texture, int index = -1)
     {
         canvasGroup.alpha = 1;
         Name.text = achievement.name;
         Description.text = achievement.desc;
-    }
-    public void Appear()
-    {
-        appearedAt = Time.time;
-        StartCoroutine(IEShow());
+        if(texture != null)
+            Icon.texture = texture;
+        // 순서대로 추가하는지 여부 확인
+        if(index == -1)
+            Appear();
+        else
+            SlideUp(index);
     }
     public void SlideUp()
     {
@@ -43,7 +50,7 @@ public class AchievePanel : MonoBehaviour
     }
     private void Start()
     {
-        achieveTest = FindObjectOfType<AchieveTest>();
+        m_wakgamesAchieve = FindObjectOfType<WakgamesAchieve>();
     }
     private void Update()
     {
@@ -55,14 +62,25 @@ public class AchievePanel : MonoBehaviour
     }
     private void OnDisable()
     {
-        achieveTest.RemovePanel(this);
+        m_wakgamesAchieve.RemovePanel(this);
+    }
+
+    private void Appear()
+    {
+        appearedAt = Time.time;
+        StartCoroutine(IEShow());
+    }
+    private void SlideUp(int index)
+    {
+        appearedAt = Time.time;
+        StartCoroutine(IESlideUp(index));
     }
 
     private IEnumerator IEShow()
     {
-        rectTransform.anchoredPosition = new Vector2(0, -360);
         const float DESTINATION = 1f;
         float time = 0f;
+        rectTransform.anchoredPosition = START;
         while(time < DESTINATION)
         {
             time += Time.deltaTime;
@@ -86,15 +104,29 @@ public class AchievePanel : MonoBehaviour
     }
     private IEnumerator IESlideUp()
     {
-        float endY = rectTransform.anchoredPosition.y + 120f;
         const float DESTINATION = 1f;
         float time = 0f;
+        float destinationY = rectTransform.anchoredPosition.y + HEIGHT;
         while(time < DESTINATION)
         {
             time += Time.deltaTime;
-            rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(rectTransform.anchoredPosition.y, endY, time / DESTINATION));
+            rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
             yield return null;
         }
-        rectTransform.anchoredPosition = new Vector2(0, endY);
+        rectTransform.anchoredPosition = new Vector2(0, destinationY);
+    }
+    private IEnumerator IESlideUp(int index)
+    {
+        const float DESTINATION = 0.8f;
+        float time = 0f;
+        rectTransform.anchoredPosition = START;
+        float destinationY = rectTransform.anchoredPosition.y + HEIGHT * (index + 1);
+        while(time < DESTINATION)
+        {
+            time += Time.deltaTime;
+            rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
+            yield return null;
+        }
+        rectTransform.anchoredPosition = new Vector2(0, destinationY);
     }
 }

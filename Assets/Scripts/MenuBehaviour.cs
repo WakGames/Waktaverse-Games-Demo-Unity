@@ -14,6 +14,8 @@ public class MenuBehaviour : MonoBehaviour
     private Text m_descText;
     [SerializeField]
     private Button m_loginButton;
+    [SerializeField]
+    private RawImage[] RawImage;
 
     void Start()
     {
@@ -48,12 +50,20 @@ public class MenuBehaviour : MonoBehaviour
 
     void AppendAchievementMessage()
     {
-        StartCoroutine(m_wakgames.GetUnlockedAchievements((achieves, resCode) =>
+        StartCoroutine(m_wakgames.GetUnlockedAchievements((result, resCode) =>
         {
-            if (achieves != null)
+            if (result != null)
             {
-                string achieveNames = string.Join(", ", achieves.achieves.Select((a) => a.name));
-                m_descText.text += $"\n달성한 도전과제 : {achieves.size}개\n{achieveNames}";
+                string achieveNames = string.Join(", ", result.achieves.Select((a) => a.name));
+                for(int i = 0; i < RawImage.Length; i++)
+                {
+                    int index = i;
+                    StartCoroutine(m_wakgames.LoadImage(result.achieves[i].img, (texture, resCode) => {
+                        if(texture != null)
+                            RawImage[index].texture = texture;
+                    }));
+                }
+                m_descText.text += $"\n달성한 도전과제 : {result.size}개\n{achieveNames}";
             }
         }));
     }
@@ -120,5 +130,28 @@ public class MenuBehaviour : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void OnBtnTestClicked()
+    {
+        //FindObjectOfType<WakgamesAchieve>().NewAlarm(new()
+        //{
+        //    name = "테스트",
+        //    desc = "테스트입니다.",
+        //    img = "u/569ab3ad-6d89-42c2-a484-9c48d1934544.png"
+        //});
+        StartCoroutine(FindObjectOfType<WakgamesAchieve>().NewAlarms(new Wakgames.SetStatsResultAchieveItem[]{
+            new()
+            {
+                name = "테스트",
+                desc = "테스트입니다.",
+                img = "u/569ab3ad-6d89-42c2-a484-9c48d1934544.png"
+            },
+            new()
+            {
+                name = "반가워요.",
+                desc = "니 얼굴"
+            }
+        }));
     }
 }
