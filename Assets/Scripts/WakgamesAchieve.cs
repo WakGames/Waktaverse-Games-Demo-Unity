@@ -21,7 +21,7 @@ public class WakgamesAchieve : MonoBehaviour
             // 새로운 알림창 생성
             GameObject achievePanel = GetActivePanel();
             AchievePanel panel = achievePanel.GetComponent<AchievePanel>();
-            panel.Setup(achievement, texture);
+            panel.Setup(achievement.name, achievement.desc, texture);
             achievePanels.Add(panel);
         }));
     }
@@ -48,12 +48,7 @@ public class WakgamesAchieve : MonoBehaviour
         for(int i = 0; i < achievements.Length; i++)
         {
             AchievePanel panel = GetActivePanel().GetComponent<AchievePanel>();
-            panel.Setup(new AchievementsResultItem()
-            {
-                name = achievements[i].name,
-                desc = achievements[i].desc,
-                img = achievements[i].img
-            }, textures[i], i);
+            panel.Setup(achievements[i].name, achievements[i].desc, textures[i], i);
             achievePanels.Add(panel);
         }
     }
@@ -66,7 +61,7 @@ public class WakgamesAchieve : MonoBehaviour
     {
         achievePanels = new List<AchievePanel>();
         AchievePanel = Resources.Load<GameObject>("Prefabs/AchievePanel");
-        m_wakgames = FindObjectOfType<Wakgames>();
+        m_wakgames = GetComponent<Wakgames>() ?? FindObjectOfType<Wakgames>();
         if(m_wakgames == null)
         {
             Debug.Log("Not found Wakgames");

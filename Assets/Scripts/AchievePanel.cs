@@ -22,11 +22,11 @@ public class AchievePanel : MonoBehaviour
     private readonly Vector2 START = new Vector2(0, -360f);
     private readonly float HEIGHT = 120f;
 
-    public void Setup(AchievementsResultItem achievement, Texture2D texture, int index = -1)
+    public void Setup(string name, string desc, Texture2D texture, int index = -1)
     {
         canvasGroup.alpha = 1;
-        Name.text = achievement.name;
-        Description.text = achievement.desc;
+        Name.text = name;
+        Description.text = desc;
         if(texture != null)
             Icon.texture = texture;
         // 순서대로 추가하는지 여부 확인
