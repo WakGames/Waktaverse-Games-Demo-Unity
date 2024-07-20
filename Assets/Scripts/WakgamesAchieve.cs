@@ -36,7 +36,7 @@ public class WakgamesAchieve : MonoBehaviour
     }
     public IEnumerator NewAlarms(SetStatsResultAchieveItem[] achievements)
     {
-        Dictionary<int, Texture2D> textures = new() { };
+        Dictionary<int, Texture2D> textures = new(){};
         // 이미지 전부 로드하기
         for(int i = 0; i < achievements.Length; i++)
         {
