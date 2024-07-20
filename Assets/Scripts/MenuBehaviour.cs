@@ -48,12 +48,12 @@ public class MenuBehaviour : MonoBehaviour
 
     void AppendAchievementMessage()
     {
-        StartCoroutine(m_wakgames.GetUnlockedAchievements((achieves, resCode) =>
+        StartCoroutine(m_wakgames.GetUnlockedAchievements((result, resCode) =>
         {
-            if (achieves != null)
+            if (result != null)
             {
-                string achieveNames = string.Join(", ", achieves.achieves.Select((a) => a.name));
-                m_descText.text += $"\n달성한 도전과제 : {achieves.size}개\n{achieveNames}";
+                string achieveNames = string.Join(", ", result.achieves.Select((a) => a.name));
+                m_descText.text += $"\n달성한 도전과제 : {result.size}개\n{achieveNames}";
             }
         }));
     }
