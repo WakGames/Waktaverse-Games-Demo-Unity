@@ -12,6 +12,8 @@ Unity 게임을 Waktaverse Games와 연동하기 위한 클라이언트 모듈 �
 ### Scripts
 
 - [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/Wakgames.cs>) : SDK 진입점.
+- [WakgamesAchieve.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesAchieve.cs>) : 도전과제 알림 관리.
+- [AchievePanel.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/AchievePanel.cs>) : 도전과제 알림.
 - [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
 - [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
 - [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesDefaultTokenStorage.cs>) : 기본 토큰 저장소.
