@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static Wakgames;
 
 public class AchievePanel : MonoBehaviour
 {
@@ -17,18 +16,23 @@ public class AchievePanel : MonoBehaviour
 
     private WakgamesAchieve m_wakgamesAchieve;
 
+    private int direction;
+
     private float appearedAt;
 
-    private readonly Vector2 START = new Vector2(0, -360f);
     private readonly float HEIGHT = 120f;
 
     public void Setup(string name, string desc, Texture2D texture, int index = -1)
     {
+        // Init info
         canvasGroup.alpha = 1;
         Name.text = name;
         Description.text = desc;
         if(texture != null)
             Icon.texture = texture;
+        // Get Direction
+        m_wakgamesAchieve = FindObjectOfType<WakgamesAchieve>();
+        direction = m_wakgamesAchieve.animationPosition == WakgamesAchievementAlarmAnimationPosition.Top ? -1 : 1;
         // 순서대로 추가하는지 여부 확인
         if(index == -1)
             Appear();
@@ -48,10 +52,6 @@ public class AchievePanel : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
     }
-    private void Start()
-    {
-        m_wakgamesAchieve = FindObjectOfType<WakgamesAchieve>();
-    }
     private void Update()
     {
         if(Time.time - appearedAt > 3f)
@@ -62,7 +62,7 @@ public class AchievePanel : MonoBehaviour
     }
     private void OnDisable()
     {
-        m_wakgamesAchieve.RemovePanel(this);
+        m_wakgamesAchieve.RemoveAlarm(this);
     }
 
     private void Appear()
@@ -80,14 +80,17 @@ public class AchievePanel : MonoBehaviour
     {
         const float DESTINATION = 1f;
         float time = 0f;
-        rectTransform.anchoredPosition = START;
+
+        rectTransform.anchoredPosition = GetInitalPosition();
+        float destinationY = rectTransform.anchoredPosition.y + HEIGHT * direction;
+
         while(time < DESTINATION)
         {
             time += Time.deltaTime;
-            rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(rectTransform.anchoredPosition.y, -240f, time / DESTINATION));
+            rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
             yield return null;
         }
-        rectTransform.anchoredPosition = new Vector2(0, -240);
+        rectTransform.anchoredPosition = new Vector2(0, destinationY);
     }
     private IEnumerator IEHide()
     {
@@ -106,7 +109,9 @@ public class AchievePanel : MonoBehaviour
     {
         const float DESTINATION = 1f;
         float time = 0f;
-        float destinationY = rectTransform.anchoredPosition.y + HEIGHT;
+
+        float destinationY = rectTransform.anchoredPosition.y + HEIGHT * direction;
+
         while(time < DESTINATION)
         {
             time += Time.deltaTime;
@@ -119,8 +124,8 @@ public class AchievePanel : MonoBehaviour
     {
         const float DESTINATION = 0.8f;
         float time = 0f;
-        rectTransform.anchoredPosition = START;
-        float destinationY = rectTransform.anchoredPosition.y + HEIGHT * (index + 1);
+        rectTransform.anchoredPosition = GetInitalPosition();
+        float destinationY = rectTransform.anchoredPosition.y + HEIGHT * (index + 1) * direction;
         while(time < DESTINATION)
         {
             time += Time.deltaTime;
@@ -129,4 +134,6 @@ public class AchievePanel : MonoBehaviour
         }
         rectTransform.anchoredPosition = new Vector2(0, destinationY);
     }
+
+    private Vector2 GetInitalPosition() => new Vector2(0, -600f) * direction;
 }

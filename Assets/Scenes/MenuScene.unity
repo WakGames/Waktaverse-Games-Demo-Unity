@@ -1320,7 +1320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea1f2f99477d16843afb112dcd9aa248, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ClientId: wakgames_demo
+  <ClientId>k__BackingField: wakgames_demo
   CallbackServerPort: 27610
 --- !u!4 &2096424422
 Transform:
@@ -1350,6 +1350,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Alarms: {fileID: 2143445665}
+  animationPosition: 1
 --- !u!1 &2143445665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,9 +1382,9 @@ RectTransform:
   m_Father: {fileID: 1138961293}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -250, y: 300}
-  m_SizeDelta: {x: 500, y: 600}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -250, y: 0}
+  m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
