@@ -113,6 +113,15 @@ public class MenuBehaviour : MonoBehaviour
         }
     }
 
+    public void OnBtnTestClicked()
+    {
+        FindObjectOfType<WakgamesAchieve>().NewAlarm(new Wakgames.AchievementsResultItem()
+        {
+            name = "니얼굴",
+            desc = "작캠 미침"
+        });
+    }
+
     public void OnBtnQuitClicked()
     {
 #if UNITY_EDITOR

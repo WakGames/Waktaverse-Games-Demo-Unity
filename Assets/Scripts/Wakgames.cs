@@ -1,13 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
-using static Wakgames;
 
 public class Wakgames : MonoBehaviour
 {
@@ -26,8 +23,12 @@ public class Wakgames : MonoBehaviour
     /// <param name="responseCode">HTTP 응답 코드.</param>
     public delegate void CallbackDelegate<T>(T result, int responseCode) where T : class;
 
-    [SerializeField]
-    private string ClientId;
+    [field:SerializeField]
+    public string ClientId
+    {
+        get;
+        private set;
+    }
     [SerializeField]
     private int CallbackServerPort;
 
@@ -678,39 +679,6 @@ public class Wakgames : MonoBehaviour
         yield return StartCoroutine(GetMethod($"api/game-link/stat-board?id={statId}", callback));
     }
 
-    #endregion
-
-    #region Wakgames Image
-    /// <summary>
-    /// 이미지를 불러옵니다.
-    /// </summary>
-    /// <param name="img">이미지 주소.</param>
-    /// <param name="callback">가져온 텍스쳐를 받을 콜백</param>
-    /// <returns></returns>
-    public IEnumerator LoadImage(string img, CallbackDelegate<Texture2D> callback)
-    {
-        // 이미지 주소가 없으면 종료
-        if(img == null)
-        {
-            callback(null, -1);
-            yield break;
-        }
-        if(!img.StartsWith($"{HOST}/img"))
-            img = $"{HOST}/img/{img}";
-        UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(img);
-        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{ClientId}");
-
-        yield return webRequest.SendWebRequest();
-        
-        if(webRequest.result == UnityWebRequest.Result.Success)
-        {
-            callback(DownloadHandlerTexture.GetContent(webRequest), (int)webRequest.responseCode);
-        }
-        else
-        {
-            callback(null, (int)webRequest.responseCode);
-        }
-    }
     #endregion
 
     #region HTTP API 기본 메서드
