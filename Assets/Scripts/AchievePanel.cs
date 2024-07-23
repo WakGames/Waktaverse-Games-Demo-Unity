@@ -13,6 +13,7 @@ public class AchievePanel : MonoBehaviour
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
+    private AudioSource audioSource;
 
     private WakgamesAchieve m_wakgamesAchieve;
 
@@ -28,6 +29,7 @@ public class AchievePanel : MonoBehaviour
         canvasGroup.alpha = 1;
         Name.text = name;
         Description.text = desc;
+        audioSource.Play();
         if(texture != null)
             Icon.texture = texture;
         // Get Direction
@@ -51,6 +53,7 @@ public class AchievePanel : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         canvasGroup = GetComponent<CanvasGroup>();
+        audioSource = GetComponentInChildren<AudioSource>();
     }
     private void Update()
     {
