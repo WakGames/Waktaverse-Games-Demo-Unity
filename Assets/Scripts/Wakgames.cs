@@ -5,7 +5,6 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Serialization;
 
 public class Wakgames : MonoBehaviour
 {
@@ -324,7 +323,7 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator GetUnlockedAchievements(CallbackDelegate<AchievementsResult> callback)
     {
-        yield return StartCoroutine(GetMethod("api/game-link/achieve", callback));
+        yield return GetMethod("api/game-link/achieve", callback);
     }
 
     /// <summary>
@@ -336,11 +335,13 @@ public class Wakgames : MonoBehaviour
     public IEnumerator UnlockAchievement(string achieveId, CallbackDelegate<SuccessResult> callback)
     {
         // 업적 달성 시, 알람 띄우기
-        void DisplayAchieveAlarm(SuccessResult success, int responseCode)
+        achieveId = Uri.EscapeDataString(achieveId);
+        callback += (success, responseCode) =>
         {
-            if(success != null)
+            if (success != null)
             {
-                StartCoroutine(GetUnlockedAchievements((result, resCode) => {
+                StartCoroutine(GetUnlockedAchievements((result, resCode) =>
+                {
                     AchievementsResultItem achieve = result.achieves.Find(item => item.id == achieveId);
                     FindObjectOfType<WakgamesAchieve>().NewAlarm(achieve);
                 }));
@@ -349,10 +350,8 @@ public class Wakgames : MonoBehaviour
             {
                 Debug.Log($"Error: {responseCode}");
             }
-        }
-        achieveId = Uri.EscapeDataString(achieveId);
-        callback += DisplayAchieveAlarm;
-        yield return StartCoroutine(PostMethod($"api/game-link/achieve?id={achieveId}", (callback)));
+        };
+        yield return PostMethod($"api/game-link/achieve?id={achieveId}", callback);
     }
 
     /// <summary>
@@ -423,7 +422,7 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator GetStats(CallbackDelegate<GetStatsResult> callback)
     {
-        yield return StartCoroutine(GetMethod("api/game-link/stat", callback));
+        yield return GetMethod("api/game-link/stat", callback);
     }
 
     /// <summary>
@@ -560,12 +559,12 @@ public class Wakgames : MonoBehaviour
     public IEnumerator SetStats(SetStatsInput stats, CallbackDelegate<SetStatsResult> callback)
     {
         // 업적 달성 시, 알람 띄우기
-        void DisplayAchieveAlarm(SetStatsResult result, int responseCode)
+        callback += (result, responseCode) =>
         {
             StartCoroutine(FindObjectOfType<WakgamesAchieve>().NewAlarms(result.achieves.ToArray()));
-        }
-        callback += DisplayAchieveAlarm;
-        yield return StartCoroutine(PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback));
+        };
+        
+        yield return PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback);
     }
 
     /// <summary>
@@ -662,7 +661,7 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator GetStatBoard(string statId, CallbackDelegate<GetStatBoardResult> callback)
     {
-        yield return StartCoroutine(GetMethod($"api/game-link/stat-board?id={statId}", callback));
+        yield return GetMethod($"api/game-link/stat-board?id={statId}", callback);
     }
 
     #endregion
@@ -704,27 +703,26 @@ public class Wakgames : MonoBehaviour
             string responseJson = webRequest.downloadHandler.text;
             var result = JsonUtility.FromJson<T>(responseJson);
             callback(result, (int)webRequest.responseCode);
+            yield break;
         }
-        else
+        
+        if (webRequest.responseCode == 401 && maxRetry > 0)
         {
-            if (webRequest.responseCode == 401 && maxRetry > 0)
-            {
-                RefreshTokenResult token = null;
-                yield return StartCoroutine(RefreshToken((t, _) => token = t));
+            RefreshTokenResult token = null;
+            yield return RefreshToken((t, _) => token = t);
 
-                if (token != null)
-                {
-                    yield return StartCoroutine(ApiMethod(webRequestFactory, callback, maxRetry - 1));
-                }
-                else
-                {
-                    callback(null, (int)webRequest.responseCode);
-                }
+            if (token != null)
+            {
+                yield return ApiMethod(webRequestFactory, callback, maxRetry - 1);
             }
             else
             {
                 callback(null, (int)webRequest.responseCode);
             }
+        }
+        else
+        {
+            callback(null, (int)webRequest.responseCode);
         }
     }
 
