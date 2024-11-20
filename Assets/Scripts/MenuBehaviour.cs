@@ -4,35 +4,33 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MenuBehaviour : MonoBehaviour
 {
-    [SerializeField]
-    private Wakgames m_wakgames;
-    [SerializeField]
-    private Text m_descText;
-    [SerializeField]
-    private Button m_loginButton;
+    [SerializeField] private Wakgames wakgames;
+    [SerializeField] private Text descText;
+    [SerializeField] private Button loginButton;
 
     void Start()
     {
-        StartCoroutine(m_wakgames.GetUserProfile((profile, _) =>
+        StartCoroutine(wakgames.GetUserProfile((profile, _) =>
         {
             if (profile != null)
             {
-                m_descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
-                m_loginButton.GetComponentInChildren<Text>().text = "Logout";
+                descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
+                loginButton.GetComponentInChildren<Text>().text = "Logout";
 
                 AppendAchievementMessage();
             }
             else
             {
-                m_descText.text = "로그아웃 상태입니다.";
+                descText.text = "로그아웃 상태입니다.";
             }
         }));
 
-        StartCoroutine(m_wakgames.GetStatBoard("click_cnt", (result, resCode) =>
+        StartCoroutine(wakgames.GetStatBoard("click_cnt", (result, resCode) =>
         {
             if (result != null)
             {
@@ -48,12 +46,12 @@ public class MenuBehaviour : MonoBehaviour
 
     void AppendAchievementMessage()
     {
-        StartCoroutine(m_wakgames.GetUnlockedAchievements((result, resCode) =>
+        StartCoroutine(wakgames.GetUnlockedAchievements((result, resCode) =>
         {
             if (result != null)
             {
                 string achieveNames = string.Join(", ", result.achieves.Select((a) => a.name));
-                m_descText.text += $"\n달성한 도전과제 : {result.size}개\n{achieveNames}";
+                descText.text += $"\n달성한 도전과제 : {result.size}개\n{achieveNames}";
             }
         }));
     }
@@ -65,31 +63,31 @@ public class MenuBehaviour : MonoBehaviour
 
     public void OnBtnLoginClicked()
     {
-        if (m_loginButton.GetComponentInChildren<Text>().text == "Logout")
+        if (loginButton.GetComponentInChildren<Text>().text == "Logout")
         {
-            m_wakgames.Logout();
+            wakgames.Logout();
 
-            m_descText.text = "로그아웃 상태입니다.";
-            m_loginButton.GetComponentInChildren<Text>().text = "Login";
+            descText.text = "로그아웃 상태입니다.";
+            loginButton.GetComponentInChildren<Text>().text = "Login";
         }
         else
         {
-            m_descText.text = "로그인 중입니다.";
+            descText.text = "로그인 중입니다.";
 
-            StartCoroutine(m_wakgames.StartLogin((profile, resCode) =>
+            StartCoroutine(wakgames.StartLogin((profile, resCode) =>
             {
                 if (profile == null)
                 {
-                    m_descText.text = $"로그인에 실패하였습니다. (Code : {resCode})";
+                    descText.text = $"로그인에 실패하였습니다. (Code : {resCode})";
                 }
                 else
                 {
-                    m_descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
-                    m_loginButton.GetComponentInChildren<Text>().text = "Logout";
+                    descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
+                    loginButton.GetComponentInChildren<Text>().text = "Logout";
 
                     AppendAchievementMessage();
 
-                    StartCoroutine(m_wakgames.UnlockAchievement("first_login", (success, resCode) =>
+                    StartCoroutine(wakgames.UnlockAchievement("first_login", (success, resCode) =>
                     {
                         if (success != null)
                         {

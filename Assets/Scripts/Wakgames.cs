@@ -5,6 +5,7 @@ using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.Serialization;
 
 public class Wakgames : MonoBehaviour
 {
@@ -29,45 +30,50 @@ public class Wakgames : MonoBehaviour
         get;
         private set;
     }
-    [SerializeField]
-    private int CallbackServerPort;
+    
+    [SerializeField] private int callbackServerPort;
 
-    public const string HOST = "https://waktaverse.games";
+    public const string Host = "https://waktaverse.games";
+
+    private WakgamesCallbackServer _callbackServer = null;
 
     /// <summary>
     /// 토큰 저장소.
     /// 별도로 설정하지 않으면 기본 저장소를 사용합니다.
     /// </summary>
-    public IWakgamesTokenStorage TokenStorage
+    public WakgamesTokenStorage TokenStorage
     {
         get
         {
-            if (m_tokenStorage == null)
+            if (_tokenStorage == null)
             {
-                m_tokenStorage = this.AddComponent<WakgamesDefaultTokenStorage>();
+                _tokenStorage = this.AddComponent<WakgamesTokenStorage>();
             }
-            return m_tokenStorage;
+            return _tokenStorage;
         }
         set
         {
-            if (m_tokenStorage != null && m_tokenStorage != value)
+            if (_tokenStorage != null && _tokenStorage != value)
             {
-                value.UpdateToken(m_tokenStorage.AccessToken, m_tokenStorage.RefreshToken, m_tokenStorage.IdToken);
+                value.UpdateToken(_tokenStorage.AccessToken, _tokenStorage.RefreshToken, _tokenStorage.IdToken);
             }
-            m_tokenStorage = value;
+            _tokenStorage = value;
         }
     }
-    private IWakgamesTokenStorage m_tokenStorage;
+    private WakgamesTokenStorage _tokenStorage;
 
     private void Start()
     {
         if (string.IsNullOrWhiteSpace(ClientId))
         {
-            throw new Exception($"유효한 Client ID를 설정해야 합니다.");
+            Debug.LogError($"유효한 Client ID를 설정해야 합니다.");
+            return;
         }
-        if (CallbackServerPort <= 0)
+        
+        if (callbackServerPort <= 0)
         {
-            throw new Exception($"유효한 콜백 서버 포트를 설정해야 합니다.");
+            Debug.LogError($"유효한 콜백 서버 포트를 설정해야 합니다.");
+            return;
         }
     }
 
@@ -84,75 +90,55 @@ public class Wakgames : MonoBehaviour
         string codeVerifier = WakgamesAuth.GenerateCodeVerifier();
         string codeChallenge = WakgamesAuth.GenerateCodeChallenge(codeVerifier);
 
-        var callbackServer = this.GetComponent<WakgamesCallbackServer>();
-        if (callbackServer == null)
+        if (!TryGetComponent(out _callbackServer))
         {
-            callbackServer = this.AddComponent<WakgamesCallbackServer>();
+            _callbackServer = this.AddComponent<WakgamesCallbackServer>();
         }
 
-        callbackServer.StartServer(CallbackServerPort);
+        _callbackServer.StartServer(callbackServerPort);
 
-        callbackServer.ClientId = ClientId;
-        callbackServer.CsrfState = csrfState;
-        callbackServer.CodeVerifier = codeVerifier;
+        _callbackServer.ClientId = ClientId;
+        _callbackServer.CsrfState = csrfState;
+        _callbackServer.CodeVerifier = codeVerifier;
 
-        string callbackUri = Uri.EscapeDataString($"http://localhost:{CallbackServerPort}/callback");
-        string authUri = $"{HOST}/oauth/authorize?responseType=code&clientId={ClientId}&state={csrfState}&callbackUri={callbackUri}&challengeMethod=S256&challenge={codeChallenge}";
+        string callbackUri = Uri.EscapeDataString($"http://localhost:{callbackServerPort}/callback");
+        string authUri = $"{Host}/oauth/authorize?responseType=code&clientId={ClientId}&state={csrfState}&callbackUri={callbackUri}&challengeMethod=S256&challenge={codeChallenge}";
         Application.OpenURL(authUri);
 
-        while (true)
-        {
-            var state = GetLoginState();
-            if (state != LoginState.Running)
-            {
-                EndLogin();
+        yield return new WaitUntil(() => GetLoginState() == LoginState.Running);
+        
+        EndLogin();
 
-                yield return StartCoroutine(GetUserProfile(callback));
-
-                yield break;
-            }
-
-            yield return null;
-        }
+        yield return GetUserProfile(callback);
     }
 
     private LoginState GetLoginState()
     {
-        var callbackServer = this.GetComponent<WakgamesCallbackServer>();
-        if (callbackServer == null)
-        {
-            throw new InvalidOperationException();
-        }
-
-        if (callbackServer.IsRunning)
+        if (_callbackServer.IsRunning)
         {
             return LoginState.Running;
         }
 
-        var token = callbackServer.UserToken;
-        if (token == null)
-        {
-            return LoginState.Fail;
-        }
-
-        return LoginState.Success;
+        return _callbackServer.UserWakgamesToken == null
+            ? LoginState.Fail
+            : LoginState.Success;
     }
 
     private void EndLogin()
     {
-        var callbackServer = this.GetComponent<WakgamesCallbackServer>();
-        if (callbackServer == null || TokenStorage == null)
+        if (_callbackServer == null || TokenStorage == null)
         {
-            throw new InvalidOperationException();
+            Debug.LogError("로그인 절차가 시작되지 않았거나 토큰 저장소가 설정되지 않았습니다.");
+            return;
         }
 
-        var token = callbackServer.UserToken;
+        var token = _callbackServer.UserWakgamesToken;
         if (token != null)
         {
             TokenStorage.UpdateToken(token.accessToken, token.refreshToken, token.idToken);
         }
 
-        Destroy(callbackServer);
+        DestroyImmediate(_callbackServer);
     }
 
     /// <summary>
@@ -212,7 +198,7 @@ public class Wakgames : MonoBehaviour
             yield break;
         }
 
-        string url = $"{HOST}/api/oauth/refresh";
+        string url = $"{Host}/api/oauth/refresh";
         using var webRequest = UnityWebRequest.Get(url);
         webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{ClientId}");
         webRequest.SetRequestHeader("Authorization", "Bearer " + TokenStorage.RefreshToken);
@@ -263,7 +249,7 @@ public class Wakgames : MonoBehaviour
     /// <returns></returns>
     public IEnumerator GetUserProfile(CallbackDelegate<UserProfileResult> callback)
     {
-        yield return StartCoroutine(GetMethod("api/game-link/user/profile", callback));
+        yield return GetMethod("api/game-link/user/profile", callback);
     }
 
     /// <summary>
@@ -304,7 +290,7 @@ public class Wakgames : MonoBehaviour
         /// <summary>
         /// 도전과제 아이콘 이미지 ID.
         /// </summary>
-        public string ImageUrl => $"{HOST}/img/{img}";
+        public string ImageUrl => $"{Host}/img/{img}";
         /// <summary>
         /// 도전과제 달성 시간.
         /// </summary>
@@ -538,7 +524,7 @@ public class Wakgames : MonoBehaviour
         /// <summary>
         /// 도전과제 아이콘 이미지 ID.
         /// </summary>
-        public string ImageUrl => $"{HOST}/img/{img}";
+        public string ImageUrl => $"{Host}/img/{img}";
         /// <summary>
         /// 도전과제 달성 시간.
         /// </summary>
@@ -685,17 +671,17 @@ public class Wakgames : MonoBehaviour
 
     private IEnumerator GetMethod<T>(string api, CallbackDelegate<T> callback) where T : class
     {
-        yield return ApiMethod(() => UnityWebRequest.Get($"{HOST}/{api}"), callback);
+        yield return ApiMethod(() => UnityWebRequest.Get($"{Host}/{api}"), callback);
     }
 
     private IEnumerator PostMethod<T>(string api, CallbackDelegate<T> callback) where T : class
     {
-        yield return ApiMethod(() => UnityWebRequest.PostWwwForm($"{HOST}/{api}", null), callback);
+        yield return ApiMethod(() => UnityWebRequest.PostWwwForm($"{Host}/{api}", null), callback);
     }
 
     private IEnumerator PutMethod<T>(string api, string body, CallbackDelegate<T> callback) where T : class
     {
-        yield return ApiMethod(() => UnityWebRequest.Put($"{HOST}/{api}", Encoding.UTF8.GetBytes(body)), callback);
+        yield return ApiMethod(() => UnityWebRequest.Put($"{Host}/{api}", Encoding.UTF8.GetBytes(body)), callback);
     }
 
     private IEnumerator ApiMethod<T>(Func<UnityWebRequest> webRequestFactory, CallbackDelegate<T> callback, int maxRetry = 1) where T : class

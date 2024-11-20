@@ -101,8 +101,8 @@ public class WakgamesAchieve : MonoBehaviour
             callback(null, -1);
             yield break;
         }
-        if(!img.StartsWith($"{HOST}/img"))
-            img = $"{HOST}/img/{img}";
+        if(!img.StartsWith($"{Host}/img"))
+            img = $"{Host}/img/{img}";
         UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(img);
         webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{m_wakgames.ClientId}");
 

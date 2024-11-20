@@ -10,22 +10,15 @@ using UnityEngine;
 
 public class WakgamesCallbackServer : MonoBehaviour
 {
-    [Serializable]
-    public class TokenResult
-    {
-        public string accessToken;
-        public string refreshToken;
-        public int idToken;
-    }
 
-    private HttpListener m_listener;
+    private HttpListener _listener;
 
     public string ClientId { get; set; }
     public string CsrfState { get; set; }
     public string CodeVerifier { get; set; }
 
     public bool IsRunning { get; private set; } = false;
-    public TokenResult UserToken { get; private set; }
+    public WakgamesToken UserWakgamesToken { get; private set; }
 
     public void StartServer(int listenPort)
     {
@@ -37,7 +30,7 @@ public class WakgamesCallbackServer : MonoBehaviour
         var listener = new HttpListener();
         listener.Prefixes.Add($"http://localhost:{listenPort}/");
         listener.Start();
-        m_listener = listener;
+        _listener = listener;
 
         IsRunning = true;
 
@@ -46,11 +39,11 @@ public class WakgamesCallbackServer : MonoBehaviour
 
     private void HandleRequests(object _)
     {
-        while (m_listener.IsListening)
+        while (_listener.IsListening)
         {
             try
             {
-                var context = m_listener.GetContext();
+                var context = _listener.GetContext();
                 var request = context.Request;
                 var response = context.Response;
 
@@ -79,9 +72,9 @@ public class WakgamesCallbackServer : MonoBehaviour
                 {
                     try
                     {
-                        UserToken = GetToken(code);
+                        UserWakgamesToken = GetToken(code);
 
-                        response.Redirect($"{Wakgames.HOST}/oauth/authorize?success=1");
+                        response.Redirect($"{Wakgames.Host}/oauth/authorize?success=1");
                         response.Close();
                     }
                     catch (Exception e)
@@ -123,16 +116,16 @@ public class WakgamesCallbackServer : MonoBehaviour
             }
         }
 
-        m_listener.Stop();
-        m_listener.Close();
+        _listener.Stop();
+        _listener.Close();
 
         IsRunning = false;
     }
 
-    private TokenResult GetToken(string code)
+    private WakgamesToken GetToken(string code)
     {
-        string callbackUri = Uri.EscapeDataString(m_listener.Prefixes.First() + "callback");
-        string getTokenUri = $"{Wakgames.HOST}/api/oauth/token?grantType=authorization_code&clientId={ClientId}&code={code}&verifier={CodeVerifier}&callbackUri={callbackUri}";
+        string callbackUri = Uri.EscapeDataString(_listener.Prefixes.First() + "callback");
+        string getTokenUri = $"{Wakgames.Host}/api/oauth/token?grantType=authorization_code&clientId={ClientId}&code={code}&verifier={CodeVerifier}&callbackUri={callbackUri}";
 
         var request = (HttpWebRequest)WebRequest.Create(getTokenUri);
         request.Method = "POST";
@@ -148,7 +141,7 @@ public class WakgamesCallbackServer : MonoBehaviour
             responseContent = reader.ReadToEnd();
         }
 
-        return JsonUtility.FromJson<TokenResult>(responseContent);
+        return JsonUtility.FromJson<WakgamesToken>(responseContent);
     }
 
     private Dictionary<string, string> ParseQueryString(string queryString)
@@ -173,10 +166,10 @@ public class WakgamesCallbackServer : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (m_listener != null && m_listener.IsListening)
+        if (_listener != null && _listener.IsListening)
         {
-            m_listener.Stop();
-            m_listener.Close();
+            _listener.Stop();
+            _listener.Close();
         }
     }
 }

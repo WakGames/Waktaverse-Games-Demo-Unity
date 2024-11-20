@@ -1,21 +1,20 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Text;
-using UnityEngine;
-using Random = UnityEngine.Random;
 
 public static class WakgamesAuth
 {
+    private const string Characters = "abcdefghijklmnopqrstuvwxyz123456789";
+
+    private static char RandomCharacter => Characters[UnityEngine.Random.Range(0, Characters.Length)];
+    
     public static string GenerateCodeVerifier()
     {
-        const string chars = "abcdefghijklmnopqrstuvwxyz123456789";
         var nonce = new char[128];
         for (int i = 0; i < nonce.Length; i++)
         {
-            nonce[i] = chars[Random.Range(0, chars.Length)];
+            nonce[i] = RandomCharacter;
         }
 
         return new string(nonce);
@@ -34,11 +33,10 @@ public static class WakgamesAuth
 
     public static string GenerateCsrfState()
     {
-        const string chars = "abcdefghijklmnopqrstuvwxyz123456789";
         var nonce = new char[16];
         for (int i = 0; i < nonce.Length; i++)
         {
-            nonce[i] = chars[Random.Range(0, chars.Length)];
+            nonce[i] = RandomCharacter;
         }
 
         return new string(nonce);
