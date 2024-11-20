@@ -104,7 +104,7 @@ public class Wakgames : MonoBehaviour
         string authUri = $"{Host}/oauth/authorize?responseType=code&clientId={ClientId}&state={csrfState}&callbackUri={callbackUri}&challengeMethod=S256&challenge={codeChallenge}";
         Application.OpenURL(authUri);
 
-        yield return new WaitUntil(() => GetLoginState() == LoginState.Running);
+        yield return new WaitUntil(() => GetLoginState() != LoginState.Running);
         
         EndLogin();
 
