@@ -165,31 +165,11 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// 토큰 갱신 응답.
-    /// </summary>
-    [Serializable]
-    public class RefreshTokenResult
-    {
-        /// <summary>
-        /// 접근 토큰.
-        /// </summary>
-        public string accessToken;
-        /// <summary>
-        /// 갱신 토큰.
-        /// </summary>
-        public string refreshToken;
-        /// <summary>
-        /// 사용자 ID.
-        /// </summary>
-        public int idToken;
-    }
-
-    /// <summary>
     /// 토큰을 갱신하고 성공시 저장합니다.
     /// </summary>
     /// <param name="callback">새로 발급된 토큰 정보를 받을 콜백.</param>
     /// <returns></returns>
-    public IEnumerator RefreshToken(CallbackDelegate<RefreshTokenResult> callback)
+    public IEnumerator RefreshToken(CallbackDelegate<WakgamesToken> callback)
     {
         if (string.IsNullOrEmpty(TokenStorage.RefreshToken))
         {
@@ -207,7 +187,7 @@ public class Wakgames : MonoBehaviour
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             string responseJson = webRequest.downloadHandler.text;
-            var result = JsonUtility.FromJson<RefreshTokenResult>(responseJson);
+            var result = JsonUtility.FromJson<WakgamesToken>(responseJson);
 
             Debug.Log("Token refreshed");
 
@@ -251,70 +231,6 @@ public class Wakgames : MonoBehaviour
         yield return GetMethod("api/game-link/user/profile", callback);
     }
 
-    /// <summary>
-    /// 한 도전과제 정보.
-    /// </summary>
-    [Serializable]
-    public class AchievementsResultItem
-    {
-        /// <summary>
-        /// 도전과제 ID.
-        /// </summary>
-        public string id;
-        /// <summary>
-        /// 도전과제 이름.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 도전과제 설명.
-        /// </summary>
-        public string desc;
-        /// <summary>
-        /// 도전과제 아이콘 이미지 ID.
-        /// </summary>
-        public string img;
-        /// <summary>
-        /// 도전과제 달성 시간. (UNIX 시간(ms))
-        /// </summary>
-        public long regDate;
-        /// <summary>
-        /// 연동된 통계 ID. (없으면 공백.)
-        /// </summary>
-        public string statId;
-        /// <summary>
-        ///  연동된 통계 목푯값. (없으면 0.)
-        /// </summary>
-        public int targetStatVal;
-
-        /// <summary>
-        /// 도전과제 아이콘 이미지 ID.
-        /// </summary>
-        public string ImageUrl => $"{Host}/img/{img}";
-        /// <summary>
-        /// 도전과제 달성 시간.
-        /// </summary>
-        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
-        /// <summary>
-        /// 연동된 통계 유무.
-        /// </summary>
-        public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
-    }
-
-    /// <summary>
-    /// 도전과제 목록.
-    /// </summary>
-    [Serializable]
-    public class AchievementsResult
-    {
-        /// <summary>
-        /// 개수.
-        /// </summary>
-        public int size;
-        /// <summary>
-        /// 도전과제 목록.
-        /// </summary>
-        public List<AchievementsResultItem> achieves;
-    }
 
     /// <summary>
     /// 사용자가 달성한 도전과제 목록을 얻습니다.
@@ -355,67 +271,6 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// 한 통계 정보.
-    /// </summary>
-    [Serializable]
-    public class GetStatsResultItem
-    {
-        /// <summary>
-        /// 통계 ID.
-        /// </summary>
-        public string id;
-        /// <summary>
-        /// 통계 이름.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 현재 통계 값.
-        /// </summary>
-        public int val;
-        /// <summary>
-        /// 최대 통계 값. (없으면 0.)
-        /// </summary>
-        public int max;
-        /// <summary>
-        /// 최초 누적일. (UNIX 시간(ms))
-        /// </summary>
-        public long regDate;
-        /// <summary>
-        /// 마지막 누적일. (UNIX 시간(ms))
-        /// </summary>
-        public long chgDate;
-
-        /// <summary>
-        /// 통계 최댓값 유무.
-        /// </summary>
-        public bool HasMax => max != 0;
-        /// <summary>
-        /// 최초 누적일.
-        /// </summary>
-        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
-        /// <summary>
-        /// 마지막 누적일.
-        /// </summary>
-        public DateTimeOffset ChgDate => DateTimeOffset.FromUnixTimeMilliseconds(chgDate);
-    }
-
-    /// <summary>
-    /// 통계 목록.
-    /// </summary>
-    [Serializable]
-    public class GetStatsResult
-    {
-        /// <summary>
-        /// 개수.
-        /// </summary>
-        public int size;
-        /// <summary>
-        /// 통계 목록.
-        /// </summary>
-        public List<GetStatsResultItem> stats;
-    }
-
-    /// <summary>
     /// 사용자의 누적 통계 값들을 얻습니다.
     /// </summary>
     /// <param name="callback">통계 목록을 받을 콜백.</param>
@@ -424,132 +279,7 @@ public class Wakgames : MonoBehaviour
     {
         yield return GetMethod("api/game-link/stat", callback);
     }
-
-    /// <summary>
-    /// 한 통계 입력 정보.
-    /// </summary>
-    [Serializable]
-    public class SetStatsInputItem
-    {
-        /// <summary>
-        /// 통계 ID.
-        /// </summary>
-        public string id;
-        /// <summary>
-        /// 입력할 통계 값.
-        /// </summary>
-        public int val;
-    }
-
-    /// <summary>
-    /// 통계 입력 목록.
-    /// </summary>
-    [Serializable]
-    public class SetStatsInput : IEnumerable<SetStatsInputItem>
-    {
-        /// <summary>
-        /// 입력할 통계들.
-        /// </summary>
-        public List<SetStatsInputItem> stats;
-
-        public void Add(string id, int val)
-        {
-            stats ??= new List<SetStatsInputItem>();
-            stats.Add(new SetStatsInputItem { id = id, val = val });
-        }
-
-        public IEnumerator<SetStatsInputItem> GetEnumerator()
-        {
-            return stats.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return stats.GetEnumerator();
-        }
-    }
-
-    /// <summary>
-    /// 한 통계 입력 결과.
-    /// </summary>
-    [Serializable]
-    public class SetStatsResultStatItem
-    {
-        /// <summary>
-        /// 통계 ID.
-        /// </summary>
-        public string id;
-        /// <summary>
-        /// 입력된 통계 값.
-        /// </summary>
-        public int val;
-    }
-
-    /// <summary>
-    /// 한 도전과제 달성 결과.
-    /// </summary>
-    [Serializable]
-    public class SetStatsResultAchieveItem
-    {
-        /// <summary>
-        /// 도전과제 ID.
-        /// </summary>
-        public string id;
-        /// <summary>
-        /// 도전과제 이름.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 도전과제 설명.
-        /// </summary>
-        public string desc;
-        /// <summary>
-        /// 도전과제 아이콘 이미지 ID.
-        /// </summary>
-        public string img;
-        /// <summary>
-        /// 도전과제 달성 시간. (UNIX 시간(ms))
-        /// </summary>
-        public long regDate;
-        /// <summary>
-        /// 연동된 통계 ID. (없으면 공백.)
-        /// </summary>
-        public string statId;
-        /// <summary>
-        ///  연동된 통계 목푯값. (없으면 0.)
-        /// </summary>
-        public int targetStatVal;
-
-        /// <summary>
-        /// 도전과제 아이콘 이미지 ID.
-        /// </summary>
-        public string ImageUrl => $"{Host}/img/{img}";
-        /// <summary>
-        /// 도전과제 달성 시간.
-        /// </summary>
-        public DateTimeOffset RegDate => DateTimeOffset.FromUnixTimeMilliseconds(regDate);
-        /// <summary>
-        /// 연동된 통계 유무.
-        /// </summary>
-        public bool StatConnected => !string.IsNullOrEmpty(statId) && targetStatVal != 0;
-    }
-
-    /// <summary>
-    /// 통계 입력 결과 목록.
-    /// </summary>
-    [Serializable]
-    public class SetStatsResult
-    {
-        /// <summary>
-        /// 입력된 통계들.
-        /// </summary>
-        public List<SetStatsResultStatItem> stats;
-        /// <summary>
-        /// 새로 달성된 도전과제들.
-        /// </summary>
-        public List<SetStatsResultAchieveItem> achieves;
-    }
-
+    
     /// <summary>
     /// 사용자의 대상 통계 값들을 입력합니다.
     /// </summary>
@@ -566,93 +296,7 @@ public class Wakgames : MonoBehaviour
         
         yield return PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback);
     }
-
-    /// <summary>
-    /// 한 사용자 통계 정보.
-    /// </summary>
-    [Serializable]
-    public class GetStatBoardResultItem
-    {
-        /// <summary>
-        /// 사용자 정보.
-        /// </summary>
-        public GetStatBoardResultUser user;
-        /// <summary>
-        /// 통계 값.
-        /// </summary>
-        public int val;
-    }
-
-    /// <summary>
-    /// 통계 정보.
-    /// </summary>
-    [Serializable]
-    public class GetStatBoardResultStat
-    {
-        /// <summary>
-        /// 통계 이름.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 최대 통계 값. (없으면 0.)
-        /// </summary>
-        public int max;
-
-        /// <summary>
-        /// 통계 최댓값 유무.
-        /// </summary>
-        public bool HasMax => max != 0;
-    }
-
-    /// <summary>
-    /// 사용자 정보.
-    /// </summary>
-    [Serializable]
-    public class GetStatBoardResultUser
-    {
-        /// <summary>
-        /// 사용자 ID.
-        /// </summary>
-        public int id;
-        /// <summary>
-        /// 닉네임.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 프로필 이미지 URL.
-        /// </summary>
-        public string img;
-    }
-
-    /// <summary>
-    /// 전체 사용자 통계 조회 결과.
-    /// </summary>
-    [Serializable]
-    public class GetStatBoardResult
-    {
-        /// <summary>
-        /// 전체 사용자 통계들 개수.
-        /// </summary>
-        public int size;
-        /// <summary>
-        /// 전체 사용자 통계들.
-        /// </summary>
-        public List<GetStatBoardResultItem> board;
-        /// <summary>
-        /// 대상 통계.
-        /// </summary>
-        public GetStatBoardResultStat stat;
-        /// <summary>
-        /// 현재 사용자 ID.
-        /// </summary>
-        public int me;
-
-        /// <summary>
-        /// 전체 사용자 통계 목록에서 현재 사용자의 인덱스.
-        /// </summary>
-        public int BoardIndex => board.FindIndex((i) => i.user.id == me);
-    }
-
+    
     /// <summary>
     /// 대상 통계의 전체 사용자 값을 조회합니다. (값 내림차순 정렬됨.)
     /// </summary>
@@ -708,7 +352,7 @@ public class Wakgames : MonoBehaviour
         
         if (webRequest.responseCode == 401 && maxRetry > 0)
         {
-            RefreshTokenResult token = null;
+            WakgamesToken token = null;
             yield return RefreshToken((t, _) => token = t);
 
             if (token != null)

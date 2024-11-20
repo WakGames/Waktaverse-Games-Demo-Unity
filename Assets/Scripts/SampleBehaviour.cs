@@ -99,7 +99,7 @@ public class SampleBehaviour : MonoBehaviour
     {
         PlayerPrefs.SetInt("Counter", m_num);
 
-        var stats = new Wakgames.SetStatsInput { { "click_cnt", m_num } };
+        var stats = new SetStatsInput { { "click_cnt", m_num } };
         StartCoroutine(m_wakgames.SetStats(stats, (result, resCode) =>
         {
             if (result != null)
