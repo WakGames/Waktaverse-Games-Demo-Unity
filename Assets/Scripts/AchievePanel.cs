@@ -3,142 +3,114 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 public class AchievePanel : MonoBehaviour
 {
-    [FormerlySerializedAs("Icon")]
     [Header("UI")]
     [SerializeField] private RawImage icon;
-    [FormerlySerializedAs("Name")] [SerializeField] private TextMeshProUGUI nameText;
-    [FormerlySerializedAs("Description")] [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI nameText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
 
     private RectTransform _rectTransform;
     private CanvasGroup _canvasGroup;
-    private AudioSource _audioSource;
 
-    private WakgamesAchieve _wakgamesAchieve;
-
+    private const float Height = 80f;
+    private const float MoveTime = 0.5f;
+    private const float WaitTime = 2f;
+    private const float FadeTime = 0.5f;
+    
     private int _direction;
+    private int _index = 0;
+    
+    private Coroutine _slideCoroutine = null;
+    private UnityAction _onHide;
+    
+    public void SetOnHide(UnityAction onHide)
+    {
+        _onHide = onHide;
+    }
 
-    private float _appearedAt;
-
-    private const float Height = 120f;
-
-    public void Setup(string name, string desc, Texture2D texture, int index = -1)
+    public void Setup(string achieveName, string achieveDesc, Texture2D texture, WakgamesAchievementAlarmPosition position)
     {
         // Init info
-        _canvasGroup.alpha = 1;
-        nameText.text = name;
-        descriptionText.text = desc;
-        _audioSource.Play();
-        if(texture != null)
+        _canvasGroup.alpha = 1f;
+        nameText.text = achieveName;
+        descriptionText.text = achieveDesc;
+        if (texture)
             icon.texture = texture;
-        // Get Direction
-        _wakgamesAchieve = FindObjectOfType<WakgamesAchieve>();
-        _direction = _wakgamesAchieve.animationPosition == WakgamesAchievementAlarmAnimationPosition.Top ? -1 : 1;
-        // 순서대로 추가하는지 여부 확인
-        if(index == -1)
-            Appear();
-        else
-            SlideUp(index);
+        _direction = position == WakgamesAchievementAlarmPosition.Top ? -1 : 1;
+        
+        ResetIndex();
+        SlideUp();
+        StartCoroutine(WaitForFade());
     }
-    public void SlideUp()
+
+    private void ResetIndex()
     {
-        // 사라지고 있다면 IEHide를 종료시키지 않는다.
-        if(_canvasGroup.alpha == 1)
-            StopAllCoroutines();
-        StartCoroutine(IESlideUp());
+        _index = 0;
+        _rectTransform.anchoredPosition = GetPanelPivotLocation(_index);
     }
 
     private void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
         _canvasGroup = GetComponent<CanvasGroup>();
-        _audioSource = GetComponentInChildren<AudioSource>();
     }
-    private void Update()
+    
+    public void SlideUp()
     {
-        if(Time.time - _appearedAt > 3f)
+        if (_slideCoroutine != null)
         {
-            StartCoroutine(IEHide());
-            _appearedAt = 9999;
+            StopCoroutine(_slideCoroutine);
+            _slideCoroutine = null;
         }
-    }
-    private void OnDisable()
-    {
-        _wakgamesAchieve.RemoveAlarm(this);
-    }
-
-    private void Appear()
-    {
-        _appearedAt = Time.time;
-        StartCoroutine(IEShow());
-    }
-    private void SlideUp(int index)
-    {
-        _appearedAt = Time.time;
-        StartCoroutine(IESlideUp(index));
+        
+        _index++;
+        _slideCoroutine = StartCoroutine(SlideUpCoroutine());
     }
 
-    private IEnumerator IEShow()
+    private IEnumerator SlideUpCoroutine()
     {
-        const float DESTINATION = 1f;
         float time = 0f;
-
-        _rectTransform.anchoredPosition = GetInitalPosition();
-        float destinationY = _rectTransform.anchoredPosition.y + Height * _direction;
-
-        while(time < DESTINATION)
+        Vector2 origin = _rectTransform.anchoredPosition;
+        Vector2 destination = GetPanelPivotLocation(_index);
+        
+        while(time < MoveTime)
         {
             time += Time.deltaTime;
-            _rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(_rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
+            _rectTransform.anchoredPosition =
+                Vector2.Lerp(origin, destination, Mathf.SmoothStep(0f, 1f, time / MoveTime));
             yield return null;
         }
-        _rectTransform.anchoredPosition = new Vector2(0, destinationY);
+        
+        _rectTransform.anchoredPosition = destination;
     }
-    private IEnumerator IEHide()
+    
+    private IEnumerator WaitForFade()
     {
-        const float DESTINATION = 0.6f;
+        yield return new WaitForSeconds(WaitTime);
+        yield return FadeCoroutine();
+    }
+
+    private IEnumerator FadeCoroutine()
+    {
         float time = 0f;
-        while(time < DESTINATION)
+        
+        while(time < FadeTime)
         {
             time += Time.deltaTime;
-            _canvasGroup.alpha = Mathf.Lerp(_canvasGroup.alpha, 0f, time / DESTINATION);
+            _canvasGroup.alpha = Mathf.SmoothStep(1f, 0f, time / FadeTime);
             yield return null;
         }
-
-        gameObject.SetActive(false);
+        
+        _canvasGroup.alpha = 0f;
+        _onHide?.Invoke();
     }
-    private IEnumerator IESlideUp()
+
+    private Vector2 GetPanelPivotLocation(int idx)
     {
-        const float DESTINATION = 1f;
-        float time = 0f;
-
-        float destinationY = _rectTransform.anchoredPosition.y + Height * _direction;
-
-        while(time < DESTINATION)
-        {
-            time += Time.deltaTime;
-            _rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(_rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
-            yield return null;
-        }
-        _rectTransform.anchoredPosition = new Vector2(0, destinationY);
+        return new Vector2(815f, (-580f + idx * Height) * _direction);
     }
-    private IEnumerator IESlideUp(int index)
-    {
-        const float DESTINATION = 0.8f;
-        float time = 0f;
-        _rectTransform.anchoredPosition = GetInitalPosition();
-        float destinationY = _rectTransform.anchoredPosition.y + Height * (index + 1) * _direction;
-        while(time < DESTINATION)
-        {
-            time += Time.deltaTime;
-            _rectTransform.anchoredPosition = new Vector2(0, Mathf.Lerp(_rectTransform.anchoredPosition.y, destinationY, time / DESTINATION));
-            yield return null;
-        }
-        _rectTransform.anchoredPosition = new Vector2(0, destinationY);
-    }
-
-    private Vector2 GetInitalPosition() => new Vector2(0, -600f) * _direction;
 }

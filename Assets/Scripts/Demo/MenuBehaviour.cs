@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,18 @@ using UnityEngine.UI;
 
 public class MenuBehaviour : MonoBehaviour
 {
-    [SerializeField] private Wakgames wakgames;
     [SerializeField] private Text descText;
     [SerializeField] private Button loginButton;
+    private Wakgames _wakgames;
+
+    private void Awake()
+    {
+        _wakgames = FindObjectOfType<Wakgames>();
+    }
 
     void Start()
     {
-        StartCoroutine(wakgames.GetUserProfile((profile, _) =>
+        StartCoroutine(_wakgames.GetUserProfile((profile, _) =>
         {
             if (profile != null)
             {
@@ -30,7 +36,7 @@ public class MenuBehaviour : MonoBehaviour
             }
         }));
 
-        StartCoroutine(wakgames.GetStatBoard("click_cnt", (result, resCode) =>
+        StartCoroutine(_wakgames.GetStatBoard("click_cnt", (result, resCode) =>
         {
             if (result != null)
             {
@@ -46,7 +52,7 @@ public class MenuBehaviour : MonoBehaviour
 
     void AppendAchievementMessage()
     {
-        StartCoroutine(wakgames.GetUnlockedAchievements((result, resCode) =>
+        StartCoroutine(_wakgames.GetUnlockedAchievements((result, resCode) =>
         {
             if (result != null)
             {
@@ -65,7 +71,7 @@ public class MenuBehaviour : MonoBehaviour
     {
         if (loginButton.GetComponentInChildren<Text>().text == "Logout")
         {
-            wakgames.Logout();
+            _wakgames.Logout();
 
             descText.text = "로그아웃 상태입니다.";
             loginButton.GetComponentInChildren<Text>().text = "Login";
@@ -74,7 +80,7 @@ public class MenuBehaviour : MonoBehaviour
         {
             descText.text = "로그인 중입니다.";
 
-            StartCoroutine(wakgames.StartLogin((profile, resCode) =>
+            StartCoroutine(_wakgames.StartLogin((profile, resCode) =>
             {
                 if (profile == null)
                 {
@@ -87,7 +93,7 @@ public class MenuBehaviour : MonoBehaviour
 
                     AppendAchievementMessage();
 
-                    StartCoroutine(wakgames.UnlockAchievement("first_login", (success, resCode) =>
+                    StartCoroutine(_wakgames.UnlockAchievement("first_login", (success, resCode) =>
                     {
                         if (success != null)
                         {

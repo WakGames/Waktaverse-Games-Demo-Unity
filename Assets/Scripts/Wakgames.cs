@@ -33,8 +33,8 @@ public class Wakgames : MonoBehaviour
     [SerializeField] private int callbackServerPort;
 
     public const string Host = "https://waktaverse.games";
-
     private WakgamesCallbackServer _callbackServer = null;
+    private WakgamesAchieve _wakgamesAchieve = null;
 
     /// <summary>
     /// 토큰 저장소.
@@ -60,6 +60,12 @@ public class Wakgames : MonoBehaviour
         }
     }
     private WakgamesTokenStorage _tokenStorage;
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+        _wakgamesAchieve = GetComponentInChildren<WakgamesAchieve>();
+    }
 
     private void Start()
     {
@@ -259,7 +265,7 @@ public class Wakgames : MonoBehaviour
                 StartCoroutine(GetUnlockedAchievements((result, resCode) =>
                 {
                     AchievementsResultItem achieve = result.achieves.Find(item => item.id == achieveId);
-                    FindObjectOfType<WakgamesAchieve>().NewAlarm(achieve);
+                    FindObjectOfType<WakgamesAchieve>().AddAlarm(achieve);
                 }));
             }
             else
@@ -291,7 +297,7 @@ public class Wakgames : MonoBehaviour
         // 업적 달성 시, 알람 띄우기
         callback += (result, responseCode) =>
         {
-            StartCoroutine(FindObjectOfType<WakgamesAchieve>().NewAlarms(result.achieves.ToArray()));
+            StartCoroutine(FindObjectOfType<WakgamesAchieve>().AddAlarms(result.achieves.ToArray()));
         };
         
         yield return PutMethod("api/game-link/stat", JsonUtility.ToJson(stats), callback);

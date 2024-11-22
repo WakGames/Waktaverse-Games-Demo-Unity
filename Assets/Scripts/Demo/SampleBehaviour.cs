@@ -1,20 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SampleBehaviour : MonoBehaviour
 {
-    [SerializeField]
-    private Wakgames m_wakgames;
-    [SerializeField]
-    private Text m_numText;
-
-    private int m_num;
+    [SerializeField] private Wakgames wakgames;
+    [SerializeField] private Text numText;
+    private int _num;
 
     void Start()
     {
-        m_numText.text = "Loading";
+        numText.text = "Loading";
         LoadClickCount();
 
         UnlockAchievement("start_game", "게임 시작");
@@ -22,23 +20,23 @@ public class SampleBehaviour : MonoBehaviour
 
     private void OnApplicationQuit()
     {
-        PlayerPrefs.SetInt("Counter", m_num);
+        PlayerPrefs.SetInt("Counter", _num);
     }
 
     public void OnBtnAddClicked()
     {
-        m_num += 1;
-        m_numText.text = m_num.ToString();
-
-        if (m_num % 10 == 0)
+        _num += 1;
+        numText.text = $"{_num}";
+        
+        if (_num % 10 == 0)
         {
             SaveClickCount();
         }
     }
     public void OnBtnResetClicked()
     {
-        m_num = 0;
-        m_numText.text = "0";
+        _num = 0;
+        numText.text = "0";
         SaveClickCount();
         UnlockAchievement("reset", "큰 결심");
     }
@@ -49,7 +47,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void UnlockAchievement(string id, string name)
     {
-        StartCoroutine(m_wakgames.UnlockAchievement(id, (success, resCode) =>
+        StartCoroutine(wakgames.UnlockAchievement(id, (success, resCode) =>
         {
             if (success != null)
             {
@@ -72,15 +70,15 @@ public class SampleBehaviour : MonoBehaviour
 
     private void LoadClickCount()
     {
-        StartCoroutine(m_wakgames.GetStats((stats, resCode) =>
+        StartCoroutine(wakgames.GetStats((stats, resCode) =>
         {
             if (stats != null)
             {
                 var stat = stats.stats.Find((s) => s.id == "click_cnt");
                 int num = stat?.val ?? 0;
 
-                m_num = num;
-                m_numText.text = num.ToString();
+                _num = num;
+                numText.text = num.ToString();
                 PlayerPrefs.SetInt("Counter", num);
 
                 Debug.Log($"클릭 수 : {num}");
@@ -89,18 +87,18 @@ public class SampleBehaviour : MonoBehaviour
             {
                 Debug.LogError($"알 수 없는 오류. (Code : {resCode})");
 
-                m_num = PlayerPrefs.GetInt("Counter", 0);
-                m_numText.text = m_num.ToString();
+                _num = PlayerPrefs.GetInt("Counter", 0);
+                numText.text = _num.ToString();
             }
         }));
     }
 
     private void SaveClickCount()
     {
-        PlayerPrefs.SetInt("Counter", m_num);
+        PlayerPrefs.SetInt("Counter", _num);
 
-        var stats = new SetStatsInput { { "click_cnt", m_num } };
-        StartCoroutine(m_wakgames.SetStats(stats, (result, resCode) =>
+        var stats = new SetStatsInput { { "click_cnt", _num } };
+        StartCoroutine(wakgames.SetStats(stats, (result, resCode) =>
         {
             if (result != null)
             {
