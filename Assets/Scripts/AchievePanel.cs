@@ -34,13 +34,12 @@ public class AchievePanel : MonoBehaviour
 
     public void Setup(string achieveName, string achieveDesc, Texture2D texture, WakgamesAchievementAlarmPosition position)
     {
-        // Init info
-        _canvasGroup.alpha = 1f;
         nameText.text = achieveName;
         descriptionText.text = achieveDesc;
+        _direction = (int)position;
+        
         if (texture)
             icon.texture = texture;
-        _direction = position == WakgamesAchievementAlarmPosition.Top ? -1 : 1;
         
         ResetIndex();
         SlideUp();
@@ -51,6 +50,7 @@ public class AchievePanel : MonoBehaviour
     {
         _index = 0;
         _rectTransform.anchoredPosition = GetPanelPivotLocation(_index);
+        _canvasGroup.alpha = 1f;
     }
 
     private void Awake()
@@ -111,6 +111,6 @@ public class AchievePanel : MonoBehaviour
 
     private Vector2 GetPanelPivotLocation(int idx)
     {
-        return new Vector2(815f, (-580f + idx * Height) * _direction);
+        return new Vector2(815f, (580f - idx * Height) * _direction);
     }
 }

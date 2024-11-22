@@ -6,10 +6,10 @@ using UnityEngine.Networking;
 using UnityEngine.Serialization;
 using static Wakgames;
 
-public enum WakgamesAchievementAlarmPosition
+public enum WakgamesAchievementAlarmPosition : sbyte
 {
-    Top,
-    Bottom
+    Top = 1,
+    Bottom = -1
 }
 
 public class WakgamesAchieve : MonoBehaviour
