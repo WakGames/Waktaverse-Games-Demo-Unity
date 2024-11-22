@@ -138,6 +138,7 @@ public class Wakgames : MonoBehaviour
         }
 
         var token = _callbackServer.UserWakgamesToken;
+        
         if (token != null)
         {
             TokenStorage.UpdateToken(token.accessToken, token.refreshToken, token.idToken);
@@ -190,21 +191,19 @@ public class Wakgames : MonoBehaviour
 
         yield return webRequest.SendWebRequest();
 
+        WakgamesToken token = null;
+
         if (webRequest.result == UnityWebRequest.Result.Success)
         {
             string responseJson = webRequest.downloadHandler.text;
-            var result = JsonUtility.FromJson<WakgamesToken>(responseJson);
+            token = JsonUtility.FromJson<WakgamesToken>(responseJson);
 
             Debug.Log("Token refreshed");
 
-            TokenStorage?.UpdateToken(result.accessToken, result.refreshToken, result.idToken);
-
-            callback(result, (int)webRequest.responseCode);
+            TokenStorage?.UpdateToken(token.accessToken, token.refreshToken, token.idToken);
         }
-        else
-        {
-            callback(null, (int)webRequest.responseCode);
-        }
+        
+        callback(token, (int)webRequest.responseCode);
     }
 
     /// <summary>
@@ -216,8 +215,7 @@ public class Wakgames : MonoBehaviour
     {
         yield return GetMethod("api/game-link/user/profile", callback);
     }
-
-
+    
     /// <summary>
     /// 사용자가 달성한 도전과제 목록을 얻습니다.
     /// </summary>
