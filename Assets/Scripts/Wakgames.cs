@@ -208,26 +208,6 @@ public class Wakgames : MonoBehaviour
     }
 
     /// <summary>
-    /// 사용자 프로필.
-    /// </summary>
-    [Serializable]
-    public class UserProfileResult
-    {
-        /// <summary>
-        /// 사용자 ID.
-        /// </summary>
-        public int id;
-        /// <summary>
-        /// 닉네임.
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// 프로필 이미지 URL.
-        /// </summary>
-        public string profileImg;
-    }
-
-    /// <summary>
     /// 사용자 프로필을 조회합니다.
     /// </summary>
     /// <param name="callback">사용자 프로필 정보를 받을 콜백.</param>

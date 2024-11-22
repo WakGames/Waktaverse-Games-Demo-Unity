@@ -849,7 +849,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 336f54cc9c71e8d43a1a7b8eb310e0b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wakgames: {fileID: 0}
   descText: {fileID: 70714637}
   loginButton: {fileID: 1487844708}
 --- !u!4 &561845490
