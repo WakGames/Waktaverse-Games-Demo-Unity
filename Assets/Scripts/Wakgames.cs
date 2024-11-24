@@ -29,7 +29,7 @@ public class Wakgames : MonoBehaviour
         get;
         private set;
     }
-    
+
     [SerializeField] private int callbackServerPort;
 
     public const string Host = "https://waktaverse.games";

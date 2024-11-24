@@ -6,9 +6,9 @@ using UnityEngine.UI;
 
 public class SampleBehaviour : MonoBehaviour
 {
-    [SerializeField] private Wakgames wakgames;
     [SerializeField] private Text numText;
     private int _num;
+    private Wakgames _wakgames;
 
     void Start()
     {
@@ -47,7 +47,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void UnlockAchievement(string id, string name)
     {
-        StartCoroutine(wakgames.UnlockAchievement(id, (success, resCode) =>
+        StartCoroutine(_wakgames.UnlockAchievement(id, (success, resCode) =>
         {
             if (success != null)
             {
@@ -70,7 +70,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void LoadClickCount()
     {
-        StartCoroutine(wakgames.GetStats((stats, resCode) =>
+        StartCoroutine(_wakgames.GetStats((stats, resCode) =>
         {
             if (stats != null)
             {
@@ -98,7 +98,7 @@ public class SampleBehaviour : MonoBehaviour
         PlayerPrefs.SetInt("Counter", _num);
 
         var stats = new SetStatsInput { { "click_cnt", _num } };
-        StartCoroutine(wakgames.SetStats(stats, (result, resCode) =>
+        StartCoroutine(_wakgames.SetStats(stats, (result, resCode) =>
         {
             if (result != null)
             {

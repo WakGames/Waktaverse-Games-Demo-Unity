@@ -1,32 +1,35 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
-using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class MenuBehaviour : MonoBehaviour
 {
-    [SerializeField] private Text descText;
+    [SerializeField] private TextMeshProUGUI descText;
+    [SerializeField] private Button startButton;
     [SerializeField] private Button loginButton;
+    [SerializeField] private Button quitButton;
     private Wakgames _wakgames;
+    private TextMeshProUGUI _loginButtonText;
 
     private void Awake()
     {
         _wakgames = FindObjectOfType<Wakgames>();
+        
+        startButton.onClick.AddListener(OnStartButtonClicked);
+        loginButton.onClick.AddListener(OnLoginButtonClicked);
+        quitButton.onClick.AddListener(OnQuitButtonClicked);
     }
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(_wakgames.GetUserProfile((profile, _) =>
         {
             if (profile != null)
             {
                 descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
-                loginButton.GetComponentInChildren<Text>().text = "Logout";
+                _loginButtonText.text = "Logout";
 
                 AppendAchievementMessage();
             }
@@ -50,7 +53,7 @@ public class MenuBehaviour : MonoBehaviour
         }));
     }
 
-    void AppendAchievementMessage()
+    private void AppendAchievementMessage()
     {
         StartCoroutine(_wakgames.GetUnlockedAchievements((result, resCode) =>
         {
@@ -62,19 +65,19 @@ public class MenuBehaviour : MonoBehaviour
         }));
     }
 
-    public void OnBtnStartClicked()
+    private void OnStartButtonClicked()
     {
         SceneManager.LoadScene("SampleScene");
     }
 
-    public void OnBtnLoginClicked()
+    private void OnLoginButtonClicked()
     {
-        if (loginButton.GetComponentInChildren<Text>().text == "Logout")
+        if (_loginButtonText.text == "Logout")
         {
             _wakgames.Logout();
 
             descText.text = "로그아웃 상태입니다.";
-            loginButton.GetComponentInChildren<Text>().text = "Login";
+            _loginButtonText.text = "Login";
         }
         else
         {
@@ -89,7 +92,7 @@ public class MenuBehaviour : MonoBehaviour
                 else
                 {
                     descText.text = $"{profile.name} 계정으로 로그인 되었습니다.";
-                    loginButton.GetComponentInChildren<Text>().text = "Logout";
+                    _loginButtonText.text = "Logout";
 
                     AppendAchievementMessage();
 
@@ -117,7 +120,7 @@ public class MenuBehaviour : MonoBehaviour
         }
     }
 
-    public void OnBtnQuitClicked()
+    private void OnQuitButtonClicked()
     {
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
