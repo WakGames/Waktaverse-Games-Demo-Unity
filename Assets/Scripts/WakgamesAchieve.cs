@@ -19,7 +19,6 @@ public class WakgamesAchieve : MonoBehaviour
     
     private AchievePanel _achievePanel;
     private AudioSource _audioSource;
-    private Wakgames _wakgames;
     
     [SerializeField] private WakgamesAchievementAlarmPosition position;
 
@@ -45,7 +44,7 @@ public class WakgamesAchieve : MonoBehaviour
     {
         // 이미지 로드 후, 알람창 띄우기
         StartCoroutine(LoadImage(achievement.img,
-            (texture, resCode) =>
+            (texture, _) =>
                 PopupAlarm(achievement.name, achievement.desc, texture)));
     }
     
@@ -82,13 +81,6 @@ public class WakgamesAchieve : MonoBehaviour
     {
         _audioSource = GetComponent<AudioSource>();
         _achievePanel = Resources.Load<AchievePanel>("Prefabs/AchievePanel");
-        _wakgames = GetComponent<Wakgames>() ?? FindObjectOfType<Wakgames>();
-        
-        if (!_wakgames)
-        {
-            Debug.Log("Not found Wakgames");
-            Destroy(gameObject);
-        }
     }
 
     private AchievePanel GetActivePanel()
@@ -116,7 +108,7 @@ public class WakgamesAchieve : MonoBehaviour
             img = $"{Host}/img/{img}";
         
         UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(img);
-        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{_wakgames.ClientId}");
+        webRequest.SetRequestHeader("User-Agent", $"WakGames_Game/{Wakgames.Instance.ClientId}");
 
         yield return webRequest.SendWebRequest();
 

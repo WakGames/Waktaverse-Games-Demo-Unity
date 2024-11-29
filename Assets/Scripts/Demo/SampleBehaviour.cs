@@ -1,14 +1,23 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SampleBehaviour : MonoBehaviour
 {
-    [SerializeField] private Text numText;
+    [SerializeField] private TextMeshProUGUI numText;
+    [SerializeField] private Button addButton;
+    [SerializeField] private Button resetButton;
     private int _num;
-    private Wakgames _wakgames;
+
+    private void Awake()
+    {
+        addButton.onClick.AddListener(OnAddButtonClicked);
+        resetButton.onClick.AddListener(OnResetButtonClicked);
+    }
 
     void Start()
     {
@@ -23,7 +32,7 @@ public class SampleBehaviour : MonoBehaviour
         PlayerPrefs.SetInt("Counter", _num);
     }
 
-    public void OnBtnAddClicked()
+    public void OnAddButtonClicked()
     {
         _num += 1;
         numText.text = $"{_num}";
@@ -33,7 +42,8 @@ public class SampleBehaviour : MonoBehaviour
             SaveClickCount();
         }
     }
-    public void OnBtnResetClicked()
+    
+    public void OnResetButtonClicked()
     {
         _num = 0;
         numText.text = "0";
@@ -47,7 +57,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void UnlockAchievement(string id, string name)
     {
-        StartCoroutine(_wakgames.UnlockAchievement(id, (success, resCode) =>
+        StartCoroutine(Wakgames.Instance.UnlockAchievement(id, (success, resCode) =>
         {
             if (success != null)
             {
@@ -70,7 +80,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void LoadClickCount()
     {
-        StartCoroutine(_wakgames.GetStats((stats, resCode) =>
+        StartCoroutine(Wakgames.Instance.GetStats((stats, resCode) =>
         {
             if (stats != null)
             {
@@ -98,7 +108,7 @@ public class SampleBehaviour : MonoBehaviour
         PlayerPrefs.SetInt("Counter", _num);
 
         var stats = new SetStatsInput { { "click_cnt", _num } };
-        StartCoroutine(_wakgames.SetStats(stats, (result, resCode) =>
+        StartCoroutine(Wakgames.Instance.SetStats(stats, (result, resCode) =>
         {
             if (result != null)
             {

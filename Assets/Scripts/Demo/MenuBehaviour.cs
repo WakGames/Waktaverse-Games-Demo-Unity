@@ -10,21 +10,20 @@ public class MenuBehaviour : MonoBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private Button loginButton;
     [SerializeField] private Button quitButton;
-    private Wakgames _wakgames;
     private TextMeshProUGUI _loginButtonText;
 
     private void Awake()
     {
-        _wakgames = FindObjectOfType<Wakgames>();
-        
         startButton.onClick.AddListener(OnStartButtonClicked);
         loginButton.onClick.AddListener(OnLoginButtonClicked);
         quitButton.onClick.AddListener(OnQuitButtonClicked);
+        
+        _loginButtonText = loginButton.GetComponentInChildren<TextMeshProUGUI>();
     }
 
     private void Start()
     {
-        StartCoroutine(_wakgames.GetUserProfile((profile, _) =>
+        StartCoroutine(Wakgames.Instance.GetUserProfile((profile, _) =>
         {
             if (profile != null)
             {
@@ -39,7 +38,7 @@ public class MenuBehaviour : MonoBehaviour
             }
         }));
 
-        StartCoroutine(_wakgames.GetStatBoard("click_cnt", (result, resCode) =>
+        StartCoroutine(Wakgames.Instance.GetStatBoard("click_cnt", (result, resCode) =>
         {
             if (result != null)
             {
@@ -55,7 +54,7 @@ public class MenuBehaviour : MonoBehaviour
 
     private void AppendAchievementMessage()
     {
-        StartCoroutine(_wakgames.GetUnlockedAchievements((result, resCode) =>
+        StartCoroutine(Wakgames.Instance.GetUnlockedAchievements((result, resCode) =>
         {
             if (result != null)
             {
@@ -74,7 +73,7 @@ public class MenuBehaviour : MonoBehaviour
     {
         if (_loginButtonText.text == "Logout")
         {
-            _wakgames.Logout();
+            Wakgames.Instance.Logout();
 
             descText.text = "로그아웃 상태입니다.";
             _loginButtonText.text = "Login";
@@ -83,7 +82,7 @@ public class MenuBehaviour : MonoBehaviour
         {
             descText.text = "로그인 중입니다.";
 
-            StartCoroutine(_wakgames.StartLogin((profile, resCode) =>
+            StartCoroutine(Wakgames.Instance.StartLogin((profile, resCode) =>
             {
                 if (profile == null)
                 {
@@ -96,7 +95,7 @@ public class MenuBehaviour : MonoBehaviour
 
                     AppendAchievementMessage();
 
-                    StartCoroutine(_wakgames.UnlockAchievement("first_login", (success, resCode) =>
+                    StartCoroutine(Wakgames.Instance.UnlockAchievement("first_login", (success, resCode) =>
                     {
                         if (success != null)
                         {

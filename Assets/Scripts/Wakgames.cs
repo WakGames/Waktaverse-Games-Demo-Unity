@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -35,6 +34,20 @@ public class Wakgames : MonoBehaviour
     public const string Host = "https://waktaverse.games";
     private WakgamesCallbackServer _callbackServer = null;
     private WakgamesAchieve _wakgamesAchieve = null;
+    
+    public static Wakgames Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<Wakgames>();
+            }
+            return _instance;
+        }
+    }
+    
+    private static Wakgames _instance;
 
     /// <summary>
     /// 토큰 저장소.
@@ -61,10 +74,13 @@ public class Wakgames : MonoBehaviour
     }
     private WakgamesTokenStorage _tokenStorage;
 
-    private void Awake()
+    [RuntimeInitializeOnLoadMethod]
+    private static void Init()
     {
-        DontDestroyOnLoad(gameObject);
-        _wakgamesAchieve = GetComponentInChildren<WakgamesAchieve>();
+        if (Instance == null)
+            _instance = Instantiate(Resources.Load<Wakgames>("Prefabs/Wakgames"));
+        
+        DontDestroyOnLoad(_instance.gameObject);
     }
 
     private void Start()
@@ -243,7 +259,7 @@ public class Wakgames : MonoBehaviour
                 StartCoroutine(GetUnlockedAchievements((result, resCode) =>
                 {
                     AchievementsResultItem achieve = result.achieves.Find(item => item.id == achieveId);
-                    FindObjectOfType<WakgamesAchieve>().AddAlarm(achieve);
+                    _wakgamesAchieve.AddAlarm(achieve);
                 }));
             }
             else
