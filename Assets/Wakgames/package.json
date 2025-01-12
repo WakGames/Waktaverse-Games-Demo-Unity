@@ -1,0 +1,24 @@
+{
+  "name": "com.wakgames.unity-sdk",
+  "displayName": "Waktaverse Games SDK",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "Unity 게임을 Waktaverse Games와 연동하기 위한 클라이언트 모듈입니다.",
+  "author": {
+    "name": "Waktaverse Games",
+    "email": "contact@waktaverse.games",
+    "url": "https://waktaverse.games/"
+  },
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "homepage": "https://waktaverse.games/",
+  "bugs": {
+    "url": "https://github.com/WakGames/Waktaverse-Games-GameSdk-Unity/issues",
+    "email" : "dev@waktaverse.games"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:WakGames/Waktaverse-Games-GameSdk-Unity.git"
+  }
+}

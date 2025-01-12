@@ -1,0 +1,8 @@
+{
+    "name": "Wakgames.Runtime",
+    "references": [
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": []
+}
