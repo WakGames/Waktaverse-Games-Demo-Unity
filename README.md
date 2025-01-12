@@ -11,13 +11,13 @@ Unity 게임을 Waktaverse Games와 연동하기 위한 클라이언트 모듈 �
 
 ### Scripts
 
-- [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/Wakgames.cs>) : SDK 진입점.
-- [WakgamesAchieve.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesAchieve.cs>) : 도전과제 알림 관리.
-- [AchievePanel.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/AchievePanel.cs>) : 도전과제 알림.
-- [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
-- [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
-- [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/WakgamesDefaultTokenStorage.cs>) : 기본 토큰 저장소.
-- [IWakgamesTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Scripts/IWakgamesTokenStorage.cs>) : 토큰 저장소 인터페이스.
+- [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/Wakgames.cs>) : SDK 진입점.
+- [WakgamesAchieve.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesAchieve.cs>) : 도전과제 알림 관리.
+- [AchievePanel.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/AchievePanel.cs>) : 도전과제 알림.
+- [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
+- [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
+- [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/DefaultWakgamesTokenStorage.cs>) : 기본 토큰 저장소.
+- [IWakgamesTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/IWakgamesTokenStorage.cs>) : 토큰 저장소 인터페이스.
 
 ## SDK 사용법
 
@@ -25,13 +25,19 @@ Wakgames 클래스를 이용합니다.
 
 ### 초기화
 
-Serialize Field를 필수로 설정해야 합니다. (예제 장면 참고.)
+상단 Window바의 Tools/Wakgames를 클릭하여 Waktgames Setup창을 띄웁니다. (예제 장면 참고.)
 
-- ClientId : 개발자 포탈에서 확인된 Client ID.
-- CallbackServerPort : 개발자 포탈에서 설정한 Callback URI의 포트 번호.  
+- 클라이언트 ID : 개발자 포탈에서 확인된 Client ID.
+- 게임 서버 포트 : 개발자 포탈에서 설정한 Callback URI의 포트 번호.  
   (개발자 포탈에서 무조건 `http://localhost:포트/callback` 형태로 설정해주세요.)
+- 도전과제 알림 : 도전과제 알림창의 팝업 여부를 결정합니다.
+- 도전과제 SFX : 도전과제 알림창 팝업시 효과음 출력 여부를 결정합니다.
+- 도전과제 위치 : 도전과제 알림창 팝업시 화면에서 팝업되는 위치를 결정합니다.
+변경 후 꼭 "변경사항 저장" 버튼을 클릭하셔야합니다.
+(ID가 누락될 경우, 서버 포트가 누락될 경우, 서버 포트가 숫자가 아닐 경우 저장되지 않습니다.)
 
 선택적으로 TokenStorage를 기본 저장소 대신 별도 구현하여 설정할 수 있습니다.
+(기본은 DefaultWakgamesTokenStorage로 PlayerPrefs를 사용합니다.)
 
 ### API
 
