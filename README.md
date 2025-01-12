@@ -11,13 +11,13 @@ Unity 게임을 Waktaverse Games와 연동하기 위한 클라이언트 모듈 �
 
 ### Scripts
 
-- [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/Wakgames.cs>) : SDK 진입점.
-- [WakgamesAchieve.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesAchieve.cs>) : 도전과제 알림 관리.
-- [AchievePanel.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/AchievePanel.cs>) : 도전과제 알림.
-- [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
-- [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
-- [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/DefaultWakgamesTokenStorage.cs>) : 기본 토큰 저장소.
-- [IWakgamesTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Scripts/IWakgamesTokenStorage.cs>) : 토큰 저장소 인터페이스.
+- [Wakgames.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/Wakgames.cs>) : SDK 진입점.
+- [WakgamesAchieve.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/WakgamesAchieve.cs>) : 도전과제 알림 관리.
+- [AchievePanel.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/AchievePanel.cs>) : 도전과제 알림.
+- [WakgamesAuth.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/WakgamesAuth.cs>) : OAuth 유틸리티.
+- [WakgamesCallbackServer.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/WakgamesCallbackServer.cs>) : OAuth 콜백 서버.
+- [WakgamesDefaultTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/DefaultWakgamesTokenStorage.cs>) : 기본 토큰 저장소.
+- [IWakgamesTokenStorage.cs](<https://github.com/WakGames/Waktaverse-Games-Demo-Unity/blob/main/Assets/Wakgames/Runtime/Scripts/IWakgamesTokenStorage.cs>) : 토큰 저장소 인터페이스.
 
 ## SDK 사용법
 
