@@ -23,7 +23,7 @@ public class MenuBehaviour : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Wakgames.Instance.GetUserProfile((profile, _) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.GetUserProfile((profile, _) =>
         {
             if (profile != null)
             {
@@ -38,7 +38,7 @@ public class MenuBehaviour : MonoBehaviour
             }
         }));
 
-        StartCoroutine(Wakgames.Instance.GetStatBoard("click_cnt", (result, resCode) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.GetStatBoard("click_cnt", (result, resCode) =>
         {
             if (result != null)
             {
@@ -54,7 +54,7 @@ public class MenuBehaviour : MonoBehaviour
 
     private void AppendAchievementMessage()
     {
-        StartCoroutine(Wakgames.Instance.GetUnlockedAchievements((result, resCode) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.GetUnlockedAchievements((result, resCode) =>
         {
             if (result != null)
             {
@@ -73,7 +73,7 @@ public class MenuBehaviour : MonoBehaviour
     {
         if (_loginButtonText.text == "Logout")
         {
-            Wakgames.Instance.Logout();
+            Wakgames.Scripts.Wakgames.Instance.Logout();
 
             descText.text = "로그아웃 상태입니다.";
             _loginButtonText.text = "Login";
@@ -82,7 +82,7 @@ public class MenuBehaviour : MonoBehaviour
         {
             descText.text = "로그인 중입니다.";
 
-            StartCoroutine(Wakgames.Instance.StartLogin((profile, resCode) =>
+            StartCoroutine(Wakgames.Scripts.Wakgames.Instance.StartLogin((profile, resCode) =>
             {
                 if (profile == null)
                 {
@@ -95,7 +95,7 @@ public class MenuBehaviour : MonoBehaviour
 
                     AppendAchievementMessage();
 
-                    StartCoroutine(Wakgames.Instance.UnlockAchievement("first_login", (success, resCode) =>
+                    StartCoroutine(Wakgames.Scripts.Wakgames.Instance.UnlockAchievement("first_login", (success, resCode) =>
                     {
                         if (success != null)
                         {

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using Wakgames.Scripts.ApiRequest;
 
 public class SampleBehaviour : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void UnlockAchievement(string id, string name)
     {
-        StartCoroutine(Wakgames.Instance.UnlockAchievement(id, (success, resCode) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.UnlockAchievement(id, (success, resCode) =>
         {
             if (success != null)
             {
@@ -80,7 +81,7 @@ public class SampleBehaviour : MonoBehaviour
 
     private void LoadClickCount()
     {
-        StartCoroutine(Wakgames.Instance.GetStats((stats, resCode) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.GetStats((stats, resCode) =>
         {
             if (stats != null)
             {
@@ -108,7 +109,7 @@ public class SampleBehaviour : MonoBehaviour
         PlayerPrefs.SetInt("Counter", _num);
 
         var stats = new SetStatsInput { { "click_cnt", _num } };
-        StartCoroutine(Wakgames.Instance.SetStats(stats, (result, resCode) =>
+        StartCoroutine(Wakgames.Scripts.Wakgames.Instance.SetStats(stats, (result, resCode) =>
         {
             if (result != null)
             {
